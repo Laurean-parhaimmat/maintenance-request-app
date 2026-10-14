@@ -1,4 +1,4 @@
-// Api routes for maintenance requests
+// API routes for maintenance requests
 
 import {
   Router,
@@ -6,62 +6,35 @@ import {
   Response,
 } from "express";
 
-import MaintenanceRequest, {
-  IMaintenanceRequest,
-  MaintenanceStatus,
-} from "../models/MaintenanceRequest";
-
+import MaintenanceRequest from "../models/MaintenanceRequest";
 import User from "../models/User";
 
-const router = Router();
+import {
+  createMaintenanceSchema,
+  updateMaintenanceSchema,
+  updateStatusSchema,
+  maintenanceIdParamSchema,
+} from "../validation/maintenanceSchemas";
 
-// Define the request body interfaces for creating and updating maintenance requests
-interface CreateMaintenanceBody {
-  userId: string;
-  title: string;
-  description: string;
-  category: string;
-  buildingAddress: string;
-  apartmentNumber: string;
-}
-// Define the request body interface for updating maintenance requests
-interface UpdateMaintenanceBody {
-  title?: string;
-  description?: string;
-  category?: string;
-  buildingAddress?: string;
-  apartmentNumber?: string;
-}
-// Define the request body interface for updating maintenance request status
-interface UpdateStatusBody {
-  status: MaintenanceStatus;
-}
-// Define a type for maintenance request updates that allows partial updates of the IMaintenanceRequest properties
-type MaintenanceUpdates =
-  Partial<
-    Pick<
-      IMaintenanceRequest,
-      | "title"
-      | "description"
-      | "category"
-      | "buildingAddress"
-      | "apartmentNumber"
-    >
-  >;
+const router = Router();
 
 
 // CREATE Maintenance Request
 router.post(
   "/",
-  async (
-    req: Request<
-      object,
-      object,
-      CreateMaintenanceBody
-    >,
-    res: Response
-  ) => {
+  async (req: Request, res: Response) => {
     try {
+      const result =
+        createMaintenanceSchema.safeParse(req.body);
+
+      if (!result.success) {
+        return res.status(400).json({
+          message:
+            "Virheelliset huoltopyynnön tiedot",
+          errors: result.error.flatten(),
+        });
+      }
+
       const {
         userId,
         title,
@@ -69,21 +42,7 @@ router.post(
         category,
         buildingAddress,
         apartmentNumber,
-      } = req.body;
-
-      if (
-        !userId ||
-        !title ||
-        !description ||
-        !category ||
-        !buildingAddress ||
-        !apartmentNumber
-      ) {
-        return res.status(400).json({
-          message:
-            "Kaikki huoltopyynnön tiedot vaaditaan",
-        });
-      }
+      } = result.data;
 
       const user =
         await User.findById(userId);
@@ -159,9 +118,25 @@ router.get(
   "/:id",
   async (req: Request, res: Response) => {
     try {
+      const paramsResult =
+        maintenanceIdParamSchema.safeParse(
+          req.params
+        );
+
+      if (!paramsResult.success) {
+        return res.status(400).json({
+          message:
+            "Virheellinen huoltopyynnön ID",
+          errors:
+            paramsResult.error.flatten(),
+        });
+      }
+
+      const { id } = paramsResult.data;
+
       const request =
         await MaintenanceRequest.findById(
-          req.params.id
+          id
         ).populate(
           "userId",
           "name email"
@@ -194,51 +169,42 @@ router.get(
 // UPDATE Maintenance Request
 router.patch(
   "/:id",
-  async (
-    req: Request<
-      { id: string },
-      object,
-      UpdateMaintenanceBody
-    >,
-    res: Response
-  ) => {
+  async (req: Request, res: Response) => {
     try {
-      const {
-        title,
-        description,
-        category,
-        buildingAddress,
-        apartmentNumber,
-      } = req.body;
+      const paramsResult =
+        maintenanceIdParamSchema.safeParse(
+          req.params
+        );
 
-      const updates:
-        MaintenanceUpdates = {};
-
-      if (title !== undefined) {
-        updates.title = title;
+      if (!paramsResult.success) {
+        return res.status(400).json({
+          message:
+            "Virheellinen huoltopyynnön ID",
+          errors:
+            paramsResult.error.flatten(),
+        });
       }
 
-      if (description !== undefined) {
-        updates.description = description;
+      const bodyResult =
+        updateMaintenanceSchema.safeParse(
+          req.body
+        );
+
+      if (!bodyResult.success) {
+        return res.status(400).json({
+          message:
+            "Virheelliset päivitystiedot",
+          errors:
+            bodyResult.error.flatten(),
+        });
       }
 
-      if (category !== undefined) {
-        updates.category = category;
-      }
-
-      if (buildingAddress !== undefined) {
-        updates.buildingAddress =
-          buildingAddress;
-      }
-
-      if (apartmentNumber !== undefined) {
-        updates.apartmentNumber =
-          apartmentNumber;
-      }
+      const { id } = paramsResult.data;
+      const updates = bodyResult.data;
 
       const request =
         await MaintenanceRequest.findByIdAndUpdate(
-          req.params.id,
+          id,
           updates,
           {
             returnDocument: "after",
@@ -273,42 +239,41 @@ router.patch(
 // UPDATE Maintenance Request Status
 router.patch(
   "/:id/status",
-  async (
-    req: Request<
-      { id: string },
-      object,
-      UpdateStatusBody
-    >,
-    res: Response
-  ) => {
+  async (req: Request, res: Response) => {
     try {
-      const { status } = req.body;
+      const paramsResult =
+        maintenanceIdParamSchema.safeParse(
+          req.params
+        );
 
-      if (!status) {
+      if (!paramsResult.success) {
         return res.status(400).json({
           message:
-            "Status puuttuu pyynnöstä",
+            "Virheellinen huoltopyynnön ID",
+          errors:
+            paramsResult.error.flatten(),
         });
       }
 
-      const allowedStatuses:
-        MaintenanceStatus[] = [
-          "uusi",
-          "kasittelyssa",
-          "ratkaistu",
-        ];
+      const bodyResult =
+        updateStatusSchema.safeParse(
+          req.body
+        );
 
-      if (
-        !allowedStatuses.includes(status)
-      ) {
+      if (!bodyResult.success) {
         return res.status(400).json({
           message: "Virheellinen tila",
+          errors:
+            bodyResult.error.flatten(),
         });
       }
+
+      const { id } = paramsResult.data;
+      const { status } = bodyResult.data;
 
       const request =
         await MaintenanceRequest.findByIdAndUpdate(
-          req.params.id,
+          id,
           { status },
           {
             returnDocument: "after",
@@ -345,9 +310,25 @@ router.delete(
   "/:id",
   async (req: Request, res: Response) => {
     try {
+      const paramsResult =
+        maintenanceIdParamSchema.safeParse(
+          req.params
+        );
+
+      if (!paramsResult.success) {
+        return res.status(400).json({
+          message:
+            "Virheellinen huoltopyynnön ID",
+          errors:
+            paramsResult.error.flatten(),
+        });
+      }
+
+      const { id } = paramsResult.data;
+
       const request =
         await MaintenanceRequest.findByIdAndDelete(
-          req.params.id
+          id
         );
 
       if (!request) {

@@ -3,61 +3,40 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 
-import User, {
-  IUser,
-  UserRole,
-} from "../models/User";
+import User from "../models/User";
+
+import {
+  createUserSchema,
+  updateUserSchema,
+  userIdParamSchema,
+} from "../validation/userSchemas";
 
 const router = Router();
-// Define the request body interfaces for creating and updating users
-interface CreateUserBody {
-  name: string;
-  email: string;
-  password: string;
-  role?: UserRole;
-}
-// Define the request body interface for updating users
-interface UpdateUserBody {
-  name?: string;
-  email?: string;
-  password?: string;
-  role?: UserRole;
-}
-// Define a type for user updates that allows partial updates of the IUser properties
-type UserUpdates =
-  Partial<
-    Pick<
-      IUser,
-      "name" | "email" | "passwordHash" | "role"
-    >
-  >;
 
 
 // CREATE User
 router.post(
   "/",
-  async (
-    req: Request<object, object, CreateUserBody>,
-    res: Response
-  ) => {
+  async (req: Request, res: Response) => {
     try {
+      const result =
+        createUserSchema.safeParse(req.body);
+
+      if (!result.success) {
+        return res.status(400).json({
+          message: "Virheelliset käyttäjätiedot",
+          errors: result.error.flatten(),
+        });
+      }
+
       const {
         name,
         email,
         password,
-        role,
-      } = req.body;
+      } = result.data;
 
-      if (!name || !email || !password) {
-        return res.status(400).json({
-          message:
-            "Nimi, sähköposti ja salasana vaaditaan",
-        });
-      }
-
-      const existingUser = await User.findOne({
-        email: email.toLowerCase(),
-      });
+      const existingUser =
+        await User.findOne({ email });
 
       if (existingUser) {
         return res.status(400).json({
@@ -71,9 +50,12 @@ router.post(
 
       const user = await User.create({
         name,
-        email: email.toLowerCase(),
+        email,
         passwordHash,
-        role: role || "user",
+
+        // Public registration always creates
+        // a normal user.
+        role: "user",
       });
 
       return res.status(201).json({
@@ -128,9 +110,20 @@ router.get(
   "/:id",
   async (req: Request, res: Response) => {
     try {
-      const user = await User.findById(
-        req.params.id
-      ).select("-passwordHash");
+      const paramsResult =
+        userIdParamSchema.safeParse(req.params);
+
+      if (!paramsResult.success) {
+        return res.status(400).json({
+          message: "Virheellinen käyttäjän ID",
+          errors: paramsResult.error.flatten(),
+        });
+      }
+
+      const { id } = paramsResult.data;
+
+      const user = await User.findById(id)
+        .select("-passwordHash");
 
       if (!user) {
         return res.status(404).json({
@@ -158,34 +151,48 @@ router.get(
 // UPDATE User
 router.patch(
   "/:id",
-  async (
-    req: Request<
-      { id: string },
-      object,
-      UpdateUserBody
-    >,
-    res: Response
-  ) => {
+  async (req: Request, res: Response) => {
     try {
+      const paramsResult =
+        userIdParamSchema.safeParse(req.params);
+
+      if (!paramsResult.success) {
+        return res.status(400).json({
+          message: "Virheellinen käyttäjän ID",
+          errors: paramsResult.error.flatten(),
+        });
+      }
+
+      const bodyResult =
+        updateUserSchema.safeParse(req.body);
+
+      if (!bodyResult.success) {
+        return res.status(400).json({
+          message: "Virheelliset päivitystiedot",
+          errors: bodyResult.error.flatten(),
+        });
+      }
+
+      const { id } = paramsResult.data;
+
       const {
         name,
         email,
         password,
-        role,
-      } = req.body;
+      } = bodyResult.data;
 
-      const updates: UserUpdates = {};
+      const updates: {
+        name?: string;
+        email?: string;
+        passwordHash?: string;
+      } = {};
 
       if (name !== undefined) {
         updates.name = name;
       }
 
       if (email !== undefined) {
-        updates.email = email.toLowerCase();
-      }
-
-      if (role !== undefined) {
-        updates.role = role;
+        updates.email = email;
       }
 
       if (password !== undefined) {
@@ -195,7 +202,7 @@ router.patch(
 
       const user =
         await User.findByIdAndUpdate(
-          req.params.id,
+          id,
           updates,
           {
             returnDocument: "after",
@@ -231,10 +238,20 @@ router.delete(
   "/:id",
   async (req: Request, res: Response) => {
     try {
+      const paramsResult =
+        userIdParamSchema.safeParse(req.params);
+
+      if (!paramsResult.success) {
+        return res.status(400).json({
+          message: "Virheellinen käyttäjän ID",
+          errors: paramsResult.error.flatten(),
+        });
+      }
+
+      const { id } = paramsResult.data;
+
       const user =
-        await User.findByIdAndDelete(
-          req.params.id
-        );
+        await User.findByIdAndDelete(id);
 
       if (!user) {
         return res.status(404).json({
