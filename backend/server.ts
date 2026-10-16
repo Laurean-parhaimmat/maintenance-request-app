@@ -12,6 +12,7 @@ import { auth } from "./auth.js";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import maintenanceRoutes from "./routes/maintenanceRoutes.js";
+import { requireAuth } from "./middleware/authMiddleware.js";
 
 const app = express();
 
@@ -29,6 +30,18 @@ app.all(
 );
 
 app.use(express.json());
+
+app.get(
+  "/api/protected-test",
+  requireAuth,
+  (_req, res) => {
+    return res.json({
+      message: "Kirjautunut käyttäjä tunnistettu",
+      user: res.locals.session.user,
+    });
+  }
+);
+
 
 // Define the routes for user and maintenance request management
 app.use("/api/user", userRoutes);

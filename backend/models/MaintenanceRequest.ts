@@ -10,7 +10,7 @@ export type MaintenanceStatus =
 
 // Define the interface for a maintenance request document  
 export interface IMaintenanceRequest {
-  userId: Types.ObjectId;
+  userId: string;
   title: string;
   description: string;
   category: string;
@@ -23,8 +23,7 @@ const maintenanceRequestSchema =
   new Schema<IMaintenanceRequest>(
     {
       userId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        type: String,
         required: true,
       },
 

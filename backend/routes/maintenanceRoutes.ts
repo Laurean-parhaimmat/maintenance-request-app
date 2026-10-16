@@ -8,6 +8,7 @@ import {
 
 import MaintenanceRequest from "../models/MaintenanceRequest.js";
 import User from "../models/User.js";
+import { requireAuth } from "../middleware/authMiddleware.js";
 
 import {
   createMaintenanceSchema,
@@ -22,6 +23,7 @@ const router = Router();
 // CREATE Maintenance Request
 router.post(
   "/",
+  requireAuth,
   async (req: Request, res: Response) => {
     try {
       const result =
@@ -36,7 +38,6 @@ router.post(
       }
 
       const {
-        userId,
         title,
         description,
         category,
@@ -44,14 +45,8 @@ router.post(
         apartmentNumber,
       } = result.data;
 
-      const user =
-        await User.findById(userId);
-
-      if (!user) {
-        return res.status(404).json({
-          message: "Käyttäjää ei löytynyt",
-        });
-      }
+      const userId =
+        res.locals.session.user.id;
 
       const maintenanceRequest =
         await MaintenanceRequest.create({
@@ -86,14 +81,18 @@ router.post(
 // READ ALL Maintenance Requests
 router.get(
   "/",
+  requireAuth,
   async (_req: Request, res: Response) => {
     try {
+      const sessionUser = res.locals.session.user;
+
+      const filter =
+        sessionUser.role === "admin"
+          ? {}
+          : { userId: sessionUser.id };
+
       const requests =
-        await MaintenanceRequest.find()
-          .populate(
-            "userId",
-            "name email"
-          )
+        await MaintenanceRequest.find(filter)
           .sort({ createdAt: -1 });
 
       return res.json(requests);
@@ -116,36 +115,36 @@ router.get(
 // READ ONE Maintenance Request
 router.get(
   "/:id",
+  requireAuth,
   async (req: Request, res: Response) => {
     try {
       const paramsResult =
-        maintenanceIdParamSchema.safeParse(
-          req.params
-        );
+        maintenanceIdParamSchema.safeParse(req.params);
 
       if (!paramsResult.success) {
         return res.status(400).json({
-          message:
-            "Virheellinen huoltopyynnön ID",
-          errors:
-            paramsResult.error.flatten(),
+          message: "Virheellinen huoltopyynnön ID",
+          errors: paramsResult.error.flatten(),
         });
       }
 
       const { id } = paramsResult.data;
+      const sessionUser = res.locals.session.user;
+
+      const filter =
+        sessionUser.role === "admin"
+          ? { _id: id }
+          : {
+              _id: id,
+              userId: sessionUser.id,
+            };
 
       const request =
-        await MaintenanceRequest.findById(
-          id
-        ).populate(
-          "userId",
-          "name email"
-        );
+        await MaintenanceRequest.findOne(filter);
 
       if (!request) {
         return res.status(404).json({
-          message:
-            "Huoltopyyntöä ei löytynyt",
+          message: "Huoltopyyntöä ei löytynyt",
         });
       }
 
@@ -157,8 +156,7 @@ router.get(
           : "Unknown error";
 
       return res.status(500).json({
-        message:
-          "Huoltopyynnön haku epäonnistui",
+        message: "Huoltopyynnön haku epäonnistui",
         error: message,
       });
     }
@@ -169,6 +167,7 @@ router.get(
 // UPDATE Maintenance Request
 router.patch(
   "/:id",
+  requireAuth,
   async (req: Request, res: Response) => {
     try {
       const paramsResult =
@@ -202,9 +201,19 @@ router.patch(
       const { id } = paramsResult.data;
       const updates = bodyResult.data;
 
+      const sessionUser = res.locals.session.user;
+
+      const filter =
+        sessionUser.role === "admin"
+          ? { _id: id }
+          : {
+              _id: id,
+              userId: sessionUser.id,
+            };
+
       const request =
-        await MaintenanceRequest.findByIdAndUpdate(
-          id,
+        await MaintenanceRequest.findOneAndUpdate(
+          filter,
           updates,
           {
             returnDocument: "after",
@@ -239,6 +248,7 @@ router.patch(
 // UPDATE Maintenance Request Status
 router.patch(
   "/:id/status",
+  requireAuth,
   async (req: Request, res: Response) => {
     try {
       const paramsResult =
@@ -254,7 +264,14 @@ router.patch(
             paramsResult.error.flatten(),
         });
       }
+      const sessionUser = res.locals.session.user;
 
+      if (sessionUser.role !== "admin") {
+        return res.status(403).json({
+          message: "Admin-oikeudet vaaditaan",
+        });
+      }
+      
       const bodyResult =
         updateStatusSchema.safeParse(
           req.body
@@ -308,6 +325,7 @@ router.patch(
 // DELETE Maintenance Request
 router.delete(
   "/:id",
+  requireAuth,
   async (req: Request, res: Response) => {
     try {
       const paramsResult =
@@ -326,10 +344,18 @@ router.delete(
 
       const { id } = paramsResult.data;
 
+      const sessionUser = res.locals.session.user;
+
+      const filter =
+        sessionUser.role === "admin"
+          ? { _id: id }
+          : {
+              _id: id,
+              userId: sessionUser.id,
+            };
+
       const request =
-        await MaintenanceRequest.findByIdAndDelete(
-          id
-        );
+        await MaintenanceRequest.findOneAndDelete(filter);
 
       if (!request) {
         return res.status(404).json({

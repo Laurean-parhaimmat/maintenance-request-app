@@ -57,7 +57,6 @@ const apartmentNumberSchema = z
 // Define Zod schema for creating maintenance request validation  
 export const createMaintenanceSchema = z
   .object({
-    userId: objectIdSchema,
     title: titleSchema,
     description: descriptionSchema,
     category: z.enum(maintenanceCategories),
