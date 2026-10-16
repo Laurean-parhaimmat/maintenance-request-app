@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Page imports
-import Home from "./Home";
-import LoginPage from "./Login";
-import Dashboard from "./Dashboard";
-import "./App.css";
+import Home from "./pages/Home";
+import LoginPage from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 import PrivateRoutes from "./utils/PrivateRoutes";
+import "./App.css";
 
 function App() {
   // Main routes after logging in

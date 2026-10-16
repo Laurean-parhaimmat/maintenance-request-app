@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./App.css";
+import "../App.css";
 
 export default function LoginPage() {
   let navigate = useNavigate();
@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [successMessage, setSuccessMessage] = useState("");
 
   // Update the input fields as the user types something
-  const handleChange = (e) => {
+  const handleChange = (e: { target: { name: any; value: any } }) => {
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value,
@@ -31,16 +31,17 @@ export default function LoginPage() {
   const validateLogin = () => {
     let newErrors = {}; // Initialize an empty array for errors
 
+    /*
     if (!loginData.username.trim()) {
       newErrors.username = "Username cannot be empty";
     } else if (!loginData.password.trim()) {
       newErrors.password = "Password required";
-    }
+    } */
 
     return newErrors;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = (e: { preventDefault: () => void }) => {
     e.preventDefault(); // Prevent page from reloading after form submission
 
     const validationErrors = validateLogin();
@@ -77,7 +78,7 @@ export default function LoginPage() {
             onChange={handleChange}
           />
           {/* Display error if needed */}
-          {errors.username && <p className="error">{errors.username}</p>}{" "}
+          {/* errors.username && <p className="error">{errors.username}</p> */}
         </div>
         <div className="form-group">
           <input
@@ -87,7 +88,7 @@ export default function LoginPage() {
             value={loginData.password}
             onChange={handleChange}
           />
-          {errors.password && <p className="error">{errors.password}</p>}{" "}
+          {/* errors.password && <p className="error">{errors.password}</p> */}
         </div>
         <button type="submit">Log In</button>
         {/* Display success message on successful login */}
