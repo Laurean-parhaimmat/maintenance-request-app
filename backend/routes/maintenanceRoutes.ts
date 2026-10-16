@@ -6,15 +6,15 @@ import {
   Response,
 } from "express";
 
-import MaintenanceRequest from "../models/MaintenanceRequest";
-import User from "../models/User";
+import MaintenanceRequest from "../models/MaintenanceRequest.js";
+import User from "../models/User.js";
 
 import {
   createMaintenanceSchema,
   updateMaintenanceSchema,
   updateStatusSchema,
   maintenanceIdParamSchema,
-} from "../validation/maintenanceSchemas";
+} from "../validation/maintenanceSchemas.js";
 
 const router = Router();
 

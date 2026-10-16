@@ -12,6 +12,7 @@
   },
   "include": [
     "server.ts",
+    "auth.ts",
     "config/**/*.ts",
     "models/**/*.ts",
     "routes/**/*.ts"

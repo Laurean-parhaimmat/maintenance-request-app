@@ -3,13 +3,13 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 
-import User from "../models/User";
+import User from "../models/User.js";
 
 import {
   createUserSchema,
   updateUserSchema,
   userIdParamSchema,
-} from "../validation/userSchemas";
+} from "../validation/userSchemas.js";
 
 const router = Router();
 
