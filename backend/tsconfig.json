@@ -15,7 +15,8 @@
     "auth.ts",
     "config/**/*.ts",
     "models/**/*.ts",
-    "routes/**/*.ts"
+    "routes/**/*.ts",
+    "validation/**/*.ts"
   ],
   "exclude": [
     "node_modules",
