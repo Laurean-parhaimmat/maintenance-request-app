@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import "./NewMaintenanceRequest.css";
 
 function NewMaintenanceRequest() {
@@ -8,9 +8,9 @@ function NewMaintenanceRequest() {
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
   const [urgency, setUrgency] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<File | null>(null);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const maintenanceRequest = {
