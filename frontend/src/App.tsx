@@ -1,10 +1,13 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./Home";
-import LoginPage from "./Login";
-import Dashboard from "./Dashboard";
+
+import Home from "./pages/Home";
+import LoginPage from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 import NewMaintenanceRequest from "./NewMaintenanceRequest";
-import "./App.css";
+
 import PrivateRoutes from "./utils/PrivateRoutes";
+import "./App.css";
 
 function App() {
   return (
@@ -18,6 +21,7 @@ function App() {
             element={<NewMaintenanceRequest />}
           />
         </Route>
+
         <Route path="/login" element={<LoginPage />} />
       </Routes>
     </Router>
