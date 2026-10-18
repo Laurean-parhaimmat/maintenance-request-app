@@ -1,45 +1,52 @@
 .maintenance-page {
   min-height: 100vh;
-  padding: 50px;
+  padding: 40px 32px;
   box-sizing: border-box;
-  background-color: #ffffff;
+  background-color: #f8fafc;
   color: #222222;
   text-align: left;
 }
 
 .maintenance-content {
-  max-width: 800px;
+  max-width: 850px;
   margin: 0 auto;
   color: #222222;
 }
 
 .maintenance-content h1 {
   margin: 0 0 10px;
-  font-size: 32px;
-  color: #111111;
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
 }
 
 .maintenance-intro {
-  margin: 0 0 35px;
-  color: #555555;
-  font-size: 16px;
+  margin: 0 0 30px;
+  color: #64748b;
+  font-size: 15px;
 }
 
 .maintenance-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
 .form-group label {
-  color: #333333;
-  font-size: 15px;
+  color: #374151;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -47,44 +54,108 @@
 .form-group textarea,
 .form-group select {
   width: 100%;
-  padding: 12px;
+  padding: 12px 14px;
   box-sizing: border-box;
-  border: 1px solid #d0d0d0;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 14px;
   background-color: #ffffff;
-  color: #222222;
+  color: #1f2937;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #999999;
+  color: #9ca3af;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-  outline: none;
-  border-color: #2878a8;
+  outline: 2px solid #bfdbfe;
+  border-color: #2563eb;
 }
 
 .form-group textarea {
-  min-height: 150px;
+  min-height: 140px;
   resize: vertical;
 }
 
-.maintenance-form button {
-  width: fit-content;
-  padding: 12px 22px;
-  border: none;
-  border-radius: 6px;
-  background-color: #2878a8;
-  color: #ffffff;
-  font-size: 15px;
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Kuvan valinta */
+.form-group input[type="file"] {
+  padding: 18px;
+  border: 2px dashed #cbd5e1;
+  background-color: #f8fafc;
   cursor: pointer;
 }
 
-.maintenance-form button:hover {
-  background-color: #21658d;
+.form-group input[type="file"]:hover {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+/* Lomakkeen painikkeet */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.form-actions button {
+  padding: 12px 22px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-actions .cancel-button {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.form-actions .cancel-button:hover {
+  background-color: #f3f4f6;
+}
+
+.form-actions .submit-button {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+}
+
+.form-actions .submit-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Pienemmät näytöt */
+@media (max-width: 600px) {
+  .maintenance-page {
+    padding: 20px 12px;
+  }
+
+  .maintenance-form {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
 }
