@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import "./NewMaintenanceRequest.css";
+import "../NewMaintenanceRequest.css";
 
 function NewMaintenanceRequest() {
   // Lomakkeen kenttien tilanhallinta

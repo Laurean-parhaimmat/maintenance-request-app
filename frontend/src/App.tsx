@@ -15,10 +15,7 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route
-            path="/new-maintenance-request"
-            element={<NewMaintenanceRequest />}
-          />
+          <Route path="/request/new" element={<NewMaintenanceRequest />} />
         </Route>
 
         <Route path="/login" element={<LoginPage />} />
