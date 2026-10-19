@@ -10,9 +10,10 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth.js";
 
 import connectDB from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js";
+
 import maintenanceRoutes from "./routes/maintenanceRoutes.js";
 import { requireAuth } from "./middleware/authMiddleware.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -43,8 +44,7 @@ app.get(
 );
 
 
-// Define the routes for user and maintenance request management
-app.use("/api/user", userRoutes);
+// Define the routes formaintenance request management
 app.use("/api/maintenance", maintenanceRoutes);
 
 app.get("/", (_req, res) => {
