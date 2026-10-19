@@ -1,5 +1,5 @@
-// This is the main server file for the backend of the application. 
-// It sets up the Express server, connects to the database, and defines the routes for user and maintenance request management.
+// Main server file for the backend.
+// Sets up Express, Better Auth, database connection and maintenance routes.
 
 import "dotenv/config";
 
@@ -10,9 +10,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./auth.js";
 
 import connectDB from "./config/db.js";
-
 import maintenanceRoutes from "./routes/maintenanceRoutes.js";
-import { requireAuth } from "./middleware/authMiddleware.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -24,7 +22,7 @@ app.use(
   })
 );
 
-// Better Auth pitää olla ennen express.json()
+// Better Auth must be registered before express.json()
 app.all(
   "/api/auth/*splat",
   toNodeHandler(auth)
@@ -32,28 +30,19 @@ app.all(
 
 app.use(express.json());
 
-app.get(
-  "/api/protected-test",
-  requireAuth,
-  (_req, res) => {
-    return res.json({
-      message: "Kirjautunut käyttäjä tunnistettu",
-      user: res.locals.session.user,
-    });
-  }
-);
-
-
-// Define the routes formaintenance request management
+// Maintenance routes
 app.use("/api/maintenance", maintenanceRoutes);
 
 app.get("/", (_req, res) => {
   res.send("Huoltopyyntö API toimii");
 });
 
+// Centralized error handler must be after all routes
+app.use(errorHandler);
+
 const PORT = Number(process.env.PORT) || 5000;
 
-// Start the server and connect to the database
+// Start the server and connect to MongoDB
 const startServer = async (): Promise<void> => {
   await connectDB();
 

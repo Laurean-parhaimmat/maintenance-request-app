@@ -1,23 +1,25 @@
-// Maintenance Request Model 
+// Maintenance Request Model
 
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-// Define the possible statuses for a maintenance request
-export type MaintenanceStatus =
-  | "uusi"
-  | "kasittelyssa"
-  | "ratkaistu";
+import {
+  MAINTENANCE_CATEGORIES,
+  MAINTENANCE_STATUSES,
+  type MaintenanceCategory,
+  type MaintenanceStatus,
+} from "../constants/maintenance.js";
 
-// Define the interface for a maintenance request document  
+// Define the interface for a maintenance request document
 export interface IMaintenanceRequest {
   userId: string;
   title: string;
   description: string;
-  category: string;
+  category: MaintenanceCategory;
   buildingAddress: string;
   apartmentNumber: string;
   status: MaintenanceStatus;
 }
+
 // Define the schema for a maintenance request document
 const maintenanceRequestSchema =
   new Schema<IMaintenanceRequest>(
@@ -39,6 +41,7 @@ const maintenanceRequestSchema =
 
       category: {
         type: String,
+        enum: [...MAINTENANCE_CATEGORIES],
         required: true,
       },
 
@@ -54,7 +57,7 @@ const maintenanceRequestSchema =
 
       status: {
         type: String,
-        enum: ["uusi", "kasittelyssa", "ratkaistu"],
+        enum: [...MAINTENANCE_STATUSES],
         default: "uusi",
       },
     },
@@ -64,6 +67,7 @@ const maintenanceRequestSchema =
       collection: "maintenance_requests",
     }
   );
+
 // Create the MaintenanceRequest model using the schema
 const MaintenanceRequest =
   mongoose.model<IMaintenanceRequest>(
