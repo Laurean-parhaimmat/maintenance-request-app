@@ -1,14 +1,8 @@
-import { useState } from "react";
+import { useState, type ChangeEvent, type SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import "../App.css";
-
-/*
-interface LoginForm {
-  email: string;
-  password: string;
-} */
 
 export default function LoginPage() {
   let navigate = useNavigate();
@@ -21,7 +15,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState("");
 
   // Update the input fields as the user types something
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value,
@@ -30,16 +24,14 @@ export default function LoginPage() {
     setErrors("");
   };
 
-  const handleLogin = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent page from reloading after form submission
     setErrors("");
 
     if (loginData.email.length === 0) {
       setErrors("Sähköposti ei saa olla tyhjä");
       return;
-    }
-
-    if (loginData.password.length === 0) {
+    } else if (loginData.password.length === 0) {
       setErrors("Salasana vaaditaan");
       return;
     }

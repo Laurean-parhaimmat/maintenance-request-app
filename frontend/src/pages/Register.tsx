@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ChangeEvent, type SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -16,7 +16,7 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState("");
 
   // Update the input fields as the user types something
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setRegistrationData({
       ...registrationData,
       [e.target.name]: e.target.value,
@@ -25,9 +25,7 @@ export default function RegisterPage() {
     setErrors(""); // Hide errors
   };
 
-  const handleRegistration = async (
-    e: React.SyntheticEvent<HTMLFormElement>,
-  ) => {
+  const handleRegistration = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent page from reloading after form submission
     setErrors("");
 
