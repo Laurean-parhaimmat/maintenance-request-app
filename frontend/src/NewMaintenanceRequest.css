@@ -1,0 +1,161 @@
+.maintenance-page {
+  min-height: 100vh;
+  padding: 40px 32px;
+  box-sizing: border-box;
+  background-color: #f8fafc;
+  color: #222222;
+  text-align: left;
+}
+
+.maintenance-content {
+  max-width: 850px;
+  margin: 0 auto;
+  color: #222222;
+}
+
+.maintenance-content h1 {
+  margin: 0 0 10px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.maintenance-intro {
+  margin: 0 0 30px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.maintenance-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.form-group label {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #1f2937;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #9ca3af;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: 2px solid #bfdbfe;
+  border-color: #2563eb;
+}
+
+.form-group textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Kuvan valinta */
+.form-group input[type="file"] {
+  padding: 18px;
+  border: 2px dashed #cbd5e1;
+  background-color: #f8fafc;
+  cursor: pointer;
+}
+
+.form-group input[type="file"]:hover {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+/* Lomakkeen painikkeet */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.form-actions button {
+  padding: 12px 22px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-actions .cancel-button {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.form-actions .cancel-button:hover {
+  background-color: #f3f4f6;
+}
+
+.form-actions .submit-button {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+}
+
+.form-actions .submit-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Pienemmät näytöt */
+@media (max-width: 600px) {
+  .maintenance-page {
+    padding: 20px 12px;
+  }
+
+  .maintenance-form {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
