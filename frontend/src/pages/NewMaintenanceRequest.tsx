@@ -1,8 +1,8 @@
-import { useState, type FormEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import "../NewMaintenanceRequest.css";
 
 function NewMaintenanceRequest() {
-  // Lomakkeen kenttien tilanhallinta
+  // Form field state management
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
@@ -10,7 +10,7 @@ function NewMaintenanceRequest() {
   const [urgency, setUrgency] = useState("");
   const [image, setImage] = useState<File | null>(null);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const maintenanceRequest = {
