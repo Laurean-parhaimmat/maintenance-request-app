@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 
-interface InputProps {
+type InputProps = {
   // Required props
   type: "text" | "email" | "password";
   label: string;
@@ -11,7 +11,7 @@ interface InputProps {
   // Optional props
   error?: string;
   disabled?: boolean;
-}
+};
 
 export default function Input({
   type,

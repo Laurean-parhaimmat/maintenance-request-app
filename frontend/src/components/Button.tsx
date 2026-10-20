@@ -1,4 +1,4 @@
-interface ButtonProps {
+type ButtonProps = {
   // Required props
   type: "submit" | "button";
   label?: string;
@@ -6,7 +6,7 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   loading?: boolean;
-}
+};
 
 export default function Button({ type, onClick }: ButtonProps) {
   return <button type={type} onClick={onClick}></button>;
