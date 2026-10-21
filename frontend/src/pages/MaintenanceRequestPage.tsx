@@ -1,5 +1,5 @@
 import "../MaintenanceRequestPage.css";
-import { Plus } from "lucide-react";
+// import { Plus } from "lucide-react";
 
 export default function MaintenanceRequestPage() {
   return (
@@ -11,10 +11,7 @@ export default function MaintenanceRequestPage() {
           <p>Seuraa omien huoltopyyntöjesi tilaa</p>
         </div>
         <button className="maintenance-requests-new-button" type="button">
-          <span aria-hidden="true">
-            <Plus />
-          </span>{" "}
-          Uusi huoltopyyntö
+          <span aria-hidden="true">+</span> Uusi huoltopyyntö
         </button>
       </header>
 
