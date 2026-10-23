@@ -8,7 +8,8 @@ import MaintenanceRequestPage from "./pages/MaintenanceRequestPage";
 import NewMaintenanceRequest from "./pages/NewMaintenanceRequest";
 
 import PrivateRoutes from "./utils/PrivateRoutes";
-import "./App.css";
+//import "./App.css";
+import "./styles/App.css";
 
 function App() {
   return (
