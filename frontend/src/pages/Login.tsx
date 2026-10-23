@@ -2,7 +2,6 @@ import { useState, type ChangeEvent, type SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import Button from "../components/Button";
-//import "./App.css";
 import "../styles/App.css";
 
 export default function LoginPage() {

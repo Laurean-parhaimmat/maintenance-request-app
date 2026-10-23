@@ -1,5 +1,4 @@
 import { useState, type SubmitEvent } from "react";
-//import "../NewMaintenanceRequest.css";
 import "../styles/NewMaintenanceRequest.css";
 
 function NewMaintenanceRequest() {
