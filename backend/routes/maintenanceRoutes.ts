@@ -52,7 +52,7 @@ router.post(
         category,
         buildingAddress,
         apartmentNumber,
-        status: "uusi",
+        status: "new",
       });
 
     return res
