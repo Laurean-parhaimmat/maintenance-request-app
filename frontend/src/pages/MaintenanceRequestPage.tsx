@@ -1,4 +1,4 @@
-import "../MaintenanceRequestPage.css";
+import "../styles/MaintenanceRequestPage.css";
 // import { Plus } from "lucide-react";
 
 export default function MaintenanceRequestPage() {
