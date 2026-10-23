@@ -24,19 +24,10 @@ export const requireAuth = async (
       });
     }
 
-    // Tallennetaan session seuraavaa routea varten
     res.locals.session = session;
 
     return next();
   } catch (error: unknown) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Unknown error";
-
-    return res.status(500).json({
-      message: "Session tarkistus epäonnistui",
-      error: message,
-    });
+    return next(error);
   }
 };

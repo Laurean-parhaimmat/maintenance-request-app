@@ -7,9 +7,9 @@ export const MAINTENANCE_CATEGORIES = [
 ] as const;
 
 export const MAINTENANCE_STATUSES = [
-  "uusi",
-  "kasittelyssa",
-  "ratkaistu",
+  "new",
+  "in progress",
+  "resolved",
 ] as const;
 
 export type MaintenanceCategory =

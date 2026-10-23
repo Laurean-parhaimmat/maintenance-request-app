@@ -58,7 +58,7 @@ const maintenanceRequestSchema =
       status: {
         type: String,
         enum: [...MAINTENANCE_STATUSES],
-        default: "uusi",
+        default: "new",
       },
     },
     {
