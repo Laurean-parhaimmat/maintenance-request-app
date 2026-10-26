@@ -25,7 +25,7 @@ export default function LoginPage() {
   };
 
   const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent page from reloading after form submission
+    e.preventDefault();
     setErrors("");
 
     if (loginData.email.length === 0) {
@@ -36,15 +36,32 @@ export default function LoginPage() {
       return;
     }
 
-    //setLoading(true);
     try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/sign-in/email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            email: loginData.email,
+            password: loginData.password,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        setErrors("Virheellinen sähköposti tai salasana");
+        return;
+      }
+
       navigate("/");
     } catch (err) {
       setErrors(
         err instanceof Error ? err.message : "Kirjautuminen epäonnistui",
       );
-    } finally {
-      //setLoading(false);
     }
   };
   return (
