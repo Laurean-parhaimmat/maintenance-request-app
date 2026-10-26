@@ -1,19 +1,55 @@
-import { useState, type ChangeEvent, type SyntheticEvent } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { useNavigate } from "react-router-dom";
-import Input from "../components/Input";
-import Button from "../components/Button";
-import "../styles/App.css";
 
-export default function LoginPage() {
+const LoginSchema = z.object({
+  email: z
+    .string()
+    .min(1, { error: "Sähköposti puuttuu" })
+    .email({ error: "Anna sähköposti oikeassa muodossa" }),
+  password: z
+    .string()
+    .min(1, { error: "Salasana puuttuu" })
+    .min(8, { error: "Salasanan täytyy olla vähintään 8 merkkiä" })
+    .max(25, { error: "Salasana saa olla enintään 25 merkkiä" }),
+});
+
+type LoginInput = z.infer<typeof LoginSchema>;
+
+export default function RegisterPage() {
   let navigate = useNavigate();
-  // Store user input, errors
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-  //const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState("");
+  /* Validating password confirmation
+  const schema = RegistrationSchema.refine(
+    (data) => data.password === data.confirmPassword,
+    {
+      message: "Salasanat eivät täsmää",
+      path: ["confirmPassword"],
 
+      // Execute when password and password confirmation match
+      when(payload) {
+        return RegistrationSchema.pick({
+          password: true,
+          confirmPassword: true,
+        }).safeParse(payload.value).success;
+      },
+    },
+  );*/
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(LoginSchema),
+    mode: "onSubmit",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+<<<<<<< HEAD
   // Update the input fields as the user types something
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginData({
@@ -36,6 +72,9 @@ export default function LoginPage() {
       return;
     }
 
+=======
+  const onLogin = (data: LoginInput) => {
+>>>>>>> d4d3657 (Updated form validation with zod, hookform/resolvers and react-hook-form)
     try {
       const response = await fetch(
         "http://localhost:5000/api/auth/sign-in/email",
@@ -58,35 +97,49 @@ export default function LoginPage() {
       }
 
       navigate("/");
+      console.log(data);
     } catch (err) {
+<<<<<<< HEAD
       setErrors(
         err instanceof Error ? err.message : "Kirjautuminen epäonnistui",
       );
+=======
+      console.error("Kirjautuminen epäonnistui", err);
+>>>>>>> d4d3657 (Updated form validation with zod, hookform/resolvers and react-hook-form)
     }
   };
+
   return (
-    <div className="login-page">
-      <form onSubmit={handleLogin}>
-        <h3 className="form-title">Kirjaudu sisään</h3>
-        <Input
-          type="email"
-          name="email"
-          label="Sähköpostiosoite"
-          value={loginData.email}
-          placeholder="nimi@esimerkki.fi"
-          onChange={handleChange}
-          error={errors}
-        />
-        <Input
-          type="password"
-          name="password"
-          label="Salasana"
-          value={loginData.password}
-          placeholder="Salasana"
-          onChange={handleChange}
-          error={errors}
-        />
-        <Button type="submit" />
+    <div>
+      <h2>Kirjaudu sisään</h2>
+      <form onSubmit={handleSubmit(onLogin)}>
+        <div>
+          <label htmlFor="email">Sähköposti</label>
+          <input
+            {...register("email")}
+            id="email"
+            type="text"
+            placeholder="jotain@esimerkki.fi"
+          />
+        </div>
+        {errors?.email?.message && (
+          <p className="text-red-700 mb-4">{errors.email.message}</p>
+        )}
+        <div>
+          <label htmlFor="password">Salasana</label>
+          <input
+            {...register("password")}
+            id="password"
+            type="password"
+            placeholder="Salasana"
+          />
+        </div>
+        {errors?.password?.message && (
+          <p className="text-red-700 mb-4">{errors.password.message}</p>
+        )}
+        <div>
+          <button onClick={handleSubmit(onLogin)} />
+        </div>
       </form>
     </div>
   );
