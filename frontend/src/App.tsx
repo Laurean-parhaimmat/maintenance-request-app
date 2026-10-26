@@ -6,7 +6,7 @@ import RegisterPage from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import MaintenanceRequestPage from "./pages/MaintenanceRequestPage";
 import NewMaintenanceRequest from "./pages/NewMaintenanceRequest";
-
+import NotFound from "./components/NotFound";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import "./styles/App.css";
 
@@ -20,7 +20,7 @@ function App() {
           <Route path="/request/new" element={<NewMaintenanceRequest />} />
           <Route path="/request" element={<MaintenanceRequestPage />} />
         </Route>
-
+        <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>
