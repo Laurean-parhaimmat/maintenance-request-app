@@ -49,32 +49,7 @@ export default function RegisterPage() {
     },
   });
 
-<<<<<<< HEAD
-  // Update the input fields as the user types something
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value,
-    });
-
-    setErrors("");
-  };
-
-  const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrors("");
-
-    if (loginData.email.length === 0) {
-      setErrors("Sähköposti ei saa olla tyhjä");
-      return;
-    } else if (loginData.password.length === 0) {
-      setErrors("Salasana vaaditaan");
-      return;
-    }
-
-=======
-  const onLogin = (data: LoginInput) => {
->>>>>>> d4d3657 (Updated form validation with zod, hookform/resolvers and react-hook-form)
+  const onLogin = async (data: LoginInput) => {
     try {
       const response = await fetch(
         "http://localhost:5000/api/auth/sign-in/email",
@@ -85,27 +60,21 @@ export default function RegisterPage() {
           },
           credentials: "include",
           body: JSON.stringify({
-            email: loginData.email,
-            password: loginData.password,
+            email: data.email,
+            password: data.password,
           }),
         },
       );
 
       if (!response.ok) {
-        setErrors("Virheellinen sähköposti tai salasana");
+        //setErrors("Virheellinen sähköposti tai salasana");
         return;
       }
 
       navigate("/");
       console.log(data);
     } catch (err) {
-<<<<<<< HEAD
-      setErrors(
-        err instanceof Error ? err.message : "Kirjautuminen epäonnistui",
-      );
-=======
       console.error("Kirjautuminen epäonnistui", err);
->>>>>>> d4d3657 (Updated form validation with zod, hookform/resolvers and react-hook-form)
     }
   };
 
