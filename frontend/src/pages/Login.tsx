@@ -107,7 +107,7 @@ export default function LoginPage() {
           </div>
 
           <div className="login-field">
-            <label htmlFor="password">Salasana</label>
+  <label htmlFor="password">Salasana</label>
 
             <div className="login-input">
               <Lock size={17} />
@@ -154,6 +154,17 @@ export default function LoginPage() {
           >
             {loading ? "Kirjaudutaan..." : "Kirjaudu sisään"}
           </button>
+
+                    <div className="register-link">
+            <span>Eikö sinulla ole tiliä?</span>
+
+            <button
+              type="button"
+              onClick={() => navigate("/register")}
+            >
+              Rekisteröidy
+            </button>
+          </div>
         </form>
       </main>
     </div>
