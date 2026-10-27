@@ -29,15 +29,10 @@
   font-weight: 700;
 }
 
-.login-brand-icon {
+.login-brand-logo {
   width: 44px;
   height: 44px;
   display: block;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #2563eb;
-  color: #ffffff;
 }
 
 .login-main {
