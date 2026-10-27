@@ -1,20 +1,21 @@
 import { useState, type ChangeEvent, type SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import Input from "../components/Input";
-import Button from "../components/Button";
-import "../styles/App.css";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+
+import "../styles/Login.css";
 
 export default function LoginPage() {
-  let navigate = useNavigate();
-  // Store user input, errors
+  const navigate = useNavigate();
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
-  //const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState("");
 
-  // Update the input fields as the user types something
+  const [errors, setErrors] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginData({
       ...loginData,
@@ -31,10 +32,14 @@ export default function LoginPage() {
     if (loginData.email.length === 0) {
       setErrors("Sähköposti ei saa olla tyhjä");
       return;
-    } else if (loginData.password.length === 0) {
+    }
+
+    if (loginData.password.length === 0) {
       setErrors("Salasana vaaditaan");
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await fetch(
@@ -58,36 +63,110 @@ export default function LoginPage() {
       }
 
       navigate("/");
-    } catch (err) {
-      setErrors(
-        err instanceof Error ? err.message : "Kirjautuminen epäonnistui",
-      );
+    } catch {
+      setErrors("Kirjautuminen epäonnistui");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="login-page">
-      <form onSubmit={handleLogin}>
-        <h3 className="form-title">Kirjaudu sisään</h3>
-        <Input
-          type="email"
-          name="email"
-          label="Sähköpostiosoite"
-          value={loginData.email}
-          placeholder="nimi@esimerkki.fi"
-          onChange={handleChange}
-          error={errors}
-        />
-        <Input
-          type="password"
-          name="password"
-          label="Salasana"
-          value={loginData.password}
-          placeholder="Salasana"
-          onChange={handleChange}
-          error={errors}
-        />
-        <Button type="submit" />
-      </form>
+      <header className="login-header">
+        <div className="login-brand">
+          <img
+            className="login-brand-logo"
+            src="/company-logo.svg"
+            alt="Huoltopyyntö"
+          />
+
+          <span>Huoltopyyntö</span>
+        </div>
+      </header>
+
+      <main className="login-main">
+        <form className="login-form" onSubmit={handleLogin}>
+          <p className="login-welcome">Tervetuloa takaisin</p>
+          <h1>Kirjaudu sisään</h1>
+
+          <div className="login-field">
+            <label htmlFor="email">Sähköposti</label>
+
+            <div className="login-input">
+              <Mail size={17} />
+
+              <input
+                id="email"
+                type="email"
+                name="email"
+                value={loginData.email}
+                placeholder="nimi@esimerkki.fi"
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="login-field">
+  <label htmlFor="password">Salasana</label>
+
+            <div className="login-input">
+              <Lock size={17} />
+
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={loginData.password}
+                placeholder="Syötä salasana"
+                onChange={handleChange}
+              />
+
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword((current) => !current)}
+                aria-label={
+                  showPassword ? "Piilota salasana" : "Näytä salasana"
+                }
+              >
+                {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+              </button>
+            </div>
+          </div>
+
+          {errors && <p className="login-error">{errors}</p>}
+
+          <div className="login-options">
+            <label className="remember-me">
+              <input type="checkbox" />
+              <span>Muista minut</span>
+            </label>
+
+            <button type="button" className="forgot-password">
+              Unohditko salasanasi?
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            className="login-submit"
+            disabled={loading}
+          >
+            {loading ? "Kirjaudutaan..." : "Kirjaudu sisään"}
+          </button>
+
+                    <div className="register-link">
+            <span>Eikö sinulla ole tiliä?</span>
+
+            <button
+              type="button"
+              onClick={() => navigate("/register")}
+            >
+              Rekisteröidy
+            </button>
+          </div>
+        </form>
+      </main>
     </div>
   );
 }
