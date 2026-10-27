@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
+import "../styles/Login.css";
+
+// Protect backend connection using environment variable
 const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL;
 
 const LoginSchema = z.object({
@@ -19,8 +24,10 @@ const LoginSchema = z.object({
 
 type LoginInput = z.infer<typeof LoginSchema>;
 
-export default function RegisterPage() {
+export default function LoginPage() {
   let navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -62,41 +69,86 @@ export default function RegisterPage() {
   };
 
   return (
-    <div>
-      <h2>Kirjaudu sisään</h2>
-      <form onSubmit={handleSubmit(onLogin)}>
-        <div>
-          <label htmlFor="email">Sähköposti</label>
-          <input
-            {...register("email")}
-            id="email"
-            type="text"
-            placeholder="jotain@esimerkki.fi"
+    <div className="login-page">
+      <header className="login-header">
+        <div className="login-brand">
+          <img
+            className="login-brand-logo"
+            src="/company-logo.svg"
+            alt="Huoltopyyntö"
           />
+
+          <span>Huoltopyyntö</span>
         </div>
-        {errors?.email?.message && (
-          <p className="text-red-700 mb-4">{errors.email.message}</p>
-        )}
-        <div>
-          <label htmlFor="password">Salasana</label>
-          <input
-            {...register("password")}
-            id="password"
-            type="password"
-            placeholder="Salasana"
-          />
-        </div>
-        {errors?.password?.message && (
-          <p className="text-red-700 mb-4">{errors.password.message}</p>
-        )}
-        <div>
-          <button onClick={handleSubmit(onLogin)} />
-        </div>
-        <div>
-          <input type="checkbox" id="rememberMe"></input>
-          <label htmlFor="rememberMe">Muista Kirjautuminen</label>
-        </div>
-      </form>
+      </header>
+
+      <main className="login-main">
+        <form className="login-form" onSubmit={handleSubmit(onLogin)}>
+          <p className="login-welcome">Tervetuloa takaisin</p>
+          <h1>Kirjaudu sisään</h1>
+
+          <div className="login-field">
+            <label htmlFor="email">Sähköposti</label>
+
+            <div className="login-input">
+              <Mail size={17} />
+
+              <input
+                {...register("email")}
+                id="email"
+                type="email"
+                name="email"
+                placeholder="nimi@esimerkki.fi"
+              />
+            </div>
+            {errors?.email?.message && (
+              <p className="text-red-700 mb-4">{errors.email.message}</p>
+            )}
+            <div className="login-field">
+              <label htmlFor="password">Salasana</label>
+              <div className="login-input">
+                <Lock size={17} />
+
+                <input
+                  {...register("password")}
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Syötä salasana"
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword((current) => !current)}
+                  aria-label={
+                    showPassword ? "Piilota salasana" : "Näytä salasana"
+                  }
+                >
+                  {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/*errors && <p className="login-error">{errors}</p>*/}
+          <div className="login-options">
+            <label className="remember-me">
+              <input type="checkbox" />
+              <span>Muista minut</span>
+            </label>
+
+            <button type="button" className="forgot-password">
+              Unohditko salasanasi?
+            </button>
+          </div>
+
+          <div></div>
+
+          <div>
+            <button onClick={handleSubmit(onLogin)} />
+          </div>
+        </form>
+      </main>
     </div>
   );
 }
