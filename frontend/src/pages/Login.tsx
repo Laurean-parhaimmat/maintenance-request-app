@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 
+const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL;
+
 const LoginSchema = z.object({
   email: z
     .string()
@@ -19,22 +21,6 @@ type LoginInput = z.infer<typeof LoginSchema>;
 
 export default function RegisterPage() {
   let navigate = useNavigate();
-  /* Validating password confirmation
-  const schema = RegistrationSchema.refine(
-    (data) => data.password === data.confirmPassword,
-    {
-      message: "Salasanat eivät täsmää",
-      path: ["confirmPassword"],
-
-      // Execute when password and password confirmation match
-      when(payload) {
-        return RegistrationSchema.pick({
-          password: true,
-          confirmPassword: true,
-        }).safeParse(payload.value).success;
-      },
-    },
-  );*/
 
   const {
     register,
@@ -51,20 +37,17 @@ export default function RegisterPage() {
 
   const onLogin = async (data: LoginInput) => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/sign-in/email",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-          }),
+      const response = await fetch(`${authUrl}/api/auth/sign-in/email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        credentials: "include",
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
 
       if (!response.ok) {
         //setErrors("Virheellinen sähköposti tai salasana");
@@ -108,6 +91,10 @@ export default function RegisterPage() {
         )}
         <div>
           <button onClick={handleSubmit(onLogin)} />
+        </div>
+        <div>
+          <input type="checkbox" id="rememberMe"></input>
+          <label htmlFor="rememberMe">Muista Kirjautuminen</label>
         </div>
       </form>
     </div>

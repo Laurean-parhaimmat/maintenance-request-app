@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 
+const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL;
+
 const RegistrationSchema = z
   .object({
     name: z
@@ -34,22 +36,6 @@ type RegistrationInput = z.infer<typeof RegistrationSchema>;
 
 export default function RegisterPage() {
   let navigate = useNavigate();
-  /* Validating password confirmation
-  const schema = RegistrationSchema.refine(
-    (data) => data.password === data.confirmPassword,
-    {
-      message: "Salasanat eivät täsmää",
-      path: ["confirmPassword"],
-
-      // Execute when password and password confirmation match
-      when(payload) {
-        return RegistrationSchema.pick({
-          password: true,
-          confirmPassword: true,
-        }).safeParse(payload.value).success;
-      },
-    },
-  );*/
 
   const {
     register,
@@ -66,8 +52,26 @@ export default function RegisterPage() {
     },
   });
 
-  const onRegister = (data: RegistrationInput) => {
+  const onRegister = async (data: RegistrationInput) => {
     try {
+      const response = await fetch(`${authUrl}/api/auth/sign-up/email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "omit",
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      if (!response.ok) {
+        //alert("Virheellinen sähköposti tai salasana");
+        return;
+      }
+
       navigate("/login");
       console.log(data);
     } catch (err) {
@@ -83,9 +87,9 @@ export default function RegisterPage() {
           <label htmlFor="name">Nimi</label>
           <input
             {...register("name")}
-            id="email"
+            id="name"
             type="text"
-            placeholder="jotain@esimerkki.fi"
+            placeholder="Nimi"
           />
         </div>
         {errors?.name?.message && (
