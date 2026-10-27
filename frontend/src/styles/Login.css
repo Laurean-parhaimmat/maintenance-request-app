@@ -197,6 +197,29 @@
   cursor: not-allowed;
 }
 
+.register-link {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.register-link button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.register-link button:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 700px) {
   .login-header {
     padding: 0 20px;
