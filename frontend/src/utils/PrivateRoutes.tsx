@@ -10,6 +10,7 @@ const PrivateRoutes = () => {
       setAuthenticated(true);
       return;
     }
+    // Actual session check
     const checkSession = async () => {
       try {
         const response = await fetch(
