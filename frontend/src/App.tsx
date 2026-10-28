@@ -9,16 +9,19 @@ import NewMaintenanceRequest from "./pages/NewMaintenanceRequest";
 
 import PrivateRoutes from "./utils/PrivateRoutes";
 import "./styles/App.css";
+import AppLayout from "./components/AppLayout";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route element={<PrivateRoutes />}>
+          <Route element={<AppLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/request/new" element={<NewMaintenanceRequest />} />
-          <Route path="/request" element={<MaintenanceRequestPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/request/new" element={<NewMaintenanceRequest />} />
+            <Route path="/request" element={<MaintenanceRequestPage />} />
+          </Route>
         </Route>
 
         <Route path="/login" element={<LoginPage />} />
