@@ -1,21 +1,20 @@
 import { Home, PlusCircle, LogOut } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
+const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL;
+
 export default function Sidebar() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/sign-out",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const response = await fetch(`${authUrl}/api/auth/sign-out`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+      });
 
       if (!response.ok) {
         console.error("Uloskirjautuminen epäonnistui");
