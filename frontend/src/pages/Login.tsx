@@ -154,10 +154,12 @@ export default function LoginPage() {
               Unohditko salasanasi?
             </button>
           </div>
-          <button onSubmit={handleSubmit(onRegister)} 
-            type="submit" 
-            className="login-submit" 
-            disabled={loading}>
+          <button
+            onSubmit={handleSubmit(onLogin)}
+            type="submit"
+            className="login-submit"
+            disabled={loading}
+          >
             {loading ? "Kirjaudutaan..." : "Kirjaudu sisään"}
           </button>
           <div className="register-link">
