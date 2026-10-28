@@ -60,6 +60,7 @@ export default function RegisterPage() {
   });
 
   const onRegister = async (data: RegistrationInput) => {
+    setLoading(true);
     try {
       const response = await fetch(`${authUrl}/api/auth/sign-up/email`, {
         method: "POST",
@@ -80,9 +81,8 @@ export default function RegisterPage() {
       }
 
       navigate("/login");
-      console.log(data);
     } catch (err) {
-      console.error("Kirjautuminen epäonnistui", err);
+      console.error("Rekisterönti epäonnistui", err);
     } finally {
       setLoading(false);
     }
