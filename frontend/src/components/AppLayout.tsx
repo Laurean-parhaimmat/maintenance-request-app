@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
-import "../styles/AppLayout.css";
+import "../styles/Layout.css";
 
 export default function AppLayout() {
   return (

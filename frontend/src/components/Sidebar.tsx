@@ -1,6 +1,6 @@
 import { Home, PlusCircle, LogOut } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import "../styles/Sidebar.css";
+
 
 export default function Sidebar() {
   return (

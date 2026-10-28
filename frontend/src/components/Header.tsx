@@ -1,5 +1,5 @@
 import { Bell, Settings, UserCircle } from "lucide-react";
-import "../styles/Header.css";
+
 
 export default function Header() {
   return (
