@@ -44,7 +44,7 @@ export default function LoginPage() {
   });
 
   const onLogin = async (data: LoginInput) => {
-    setLoading(true);
+    //setLoading(true);
 
     try {
       const response = await fetch(`${authUrl}/api/auth/sign-in/email`, {

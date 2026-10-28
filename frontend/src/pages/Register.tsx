@@ -84,7 +84,7 @@ export default function RegisterPage() {
     } catch (err) {
       console.error("Kirjautuminen epäonnistui", err);
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
