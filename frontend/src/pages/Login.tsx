@@ -1,70 +1,75 @@
-import { useState, type ChangeEvent, type SyntheticEvent } from "react";
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-
 import "../styles/Login.css";
 
+const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL; // Hide backend connection port using environment variable
+
+const LoginSchema = z.object({
+  email: z
+    .string()
+    .min(1, { error: "Sähköposti puuttuu" })
+    .email({ error: "Anna sähköposti oikeassa muodossa" }),
+  password: z
+    .string()
+    .min(1, { error: "Salasana puuttuu" })
+    .min(8, { error: "Salasanan täytyy olla vähintään 8 merkkiä" })
+    .max(30, { error: "Salasana saa olla enintään 30 merkkiä" }),
+});
+
+type LoginInput = z.infer<typeof LoginSchema>;
+
 export default function LoginPage() {
-  const navigate = useNavigate();
+  let navigate = useNavigate();
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [errors, setErrors] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value,
-    });
+  const {
+    register, // Keep track of inputs
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(LoginSchema),
+    mode: "onSubmit",
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    criteriaMode: "all",
+  });
 
-    setErrors("");
-  };
-
-  const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrors("");
-
-    if (loginData.email.length === 0) {
-      setErrors("Sähköposti ei saa olla tyhjä");
-      return;
-    }
-
-    if (loginData.password.length === 0) {
-      setErrors("Salasana vaaditaan");
-      return;
-    }
-
+  const onLogin = async (data: LoginInput) => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/sign-in/email",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            email: loginData.email,
-            password: loginData.password,
-          }),
+      const response = await fetch(`${authUrl}/api/auth/sign-in/email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        credentials: "include",
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
 
       if (!response.ok) {
-        setErrors("Virheellinen sähköposti tai salasana");
+        setError("root.serverError", {
+          type: String(response.status),
+        });
+
         return;
       }
 
       navigate("/");
-    } catch {
-      setErrors("Kirjautuminen epäonnistui");
+    } catch (err) {
+      console.error("Kirjautuminen epäonnistui", err);
     } finally {
       setLoading(false);
     }
@@ -85,7 +90,7 @@ export default function LoginPage() {
       </header>
 
       <main className="login-main">
-        <form className="login-form" onSubmit={handleLogin}>
+        <form className="login-form" onSubmit={handleSubmit(onLogin)}>
           <p className="login-welcome">Tervetuloa takaisin</p>
           <h1>Kirjaudu sisään</h1>
 
@@ -96,31 +101,29 @@ export default function LoginPage() {
               <Mail size={17} />
 
               <input
+                {...register("email")}
                 id="email"
-                type="email"
+                type="text"
                 name="email"
-                value={loginData.email}
                 placeholder="nimi@esimerkki.fi"
-                onChange={handleChange}
               />
             </div>
+            {errors?.email?.message && (
+              <p className="login-error">{errors.email.message}</p>
+            )}
           </div>
-
           <div className="login-field">
-  <label htmlFor="password">Salasana</label>
-
+            <label htmlFor="password">Salasana</label>
             <div className="login-input">
               <Lock size={17} />
 
               <input
+                {...register("password")}
                 id="password"
                 type={showPassword ? "text" : "password"}
                 name="password"
-                value={loginData.password}
                 placeholder="Syötä salasana"
-                onChange={handleChange}
               />
-
               <button
                 type="button"
                 className="password-toggle"
@@ -132,10 +135,14 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
               </button>
             </div>
+            {errors?.password?.message && (
+              <p className="login-error">{errors.password.message}</p>
+            )}
+            {/* Server-side validation for correct credentials */}
+            {errors.root?.serverError?.type === "401" && (
+              <p className="login-error">Väärä sähköposti tai salasana</p>
+            )}
           </div>
-
-          {errors && <p className="login-error">{errors}</p>}
-
           <div className="login-options">
             <label className="remember-me">
               <input type="checkbox" />
@@ -146,22 +153,18 @@ export default function LoginPage() {
               Unohditko salasanasi?
             </button>
           </div>
-
           <button
+            onSubmit={handleSubmit(onLogin)}
             type="submit"
             className="login-submit"
             disabled={loading}
           >
             {loading ? "Kirjaudutaan..." : "Kirjaudu sisään"}
           </button>
-
-                    <div className="register-link">
+          <div className="register-link">
             <span>Eikö sinulla ole tiliä?</span>
 
-            <button
-              type="button"
-              onClick={() => navigate("/register")}
-            >
+            <button type="button" onClick={() => navigate("/register")}>
               Rekisteröidy
             </button>
           </div>

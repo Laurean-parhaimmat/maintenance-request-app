@@ -41,6 +41,7 @@ The maintenance request process is:
 The application consists of four main pages:
 
 - Login Page
+- Register Page
 - Home
 - New Maintenance Request
 - Request Details
@@ -48,6 +49,10 @@ The application consists of four main pages:
 ### 1. Login Page
 
 The Login Page allows resident users and maintenance users to log into the application.
+
+### 2. Register Page
+
+New users can sign up for the application by providing a name, email and password. Once successfully registered, the user can log in with the registered email and password.
 
 ### 2. Home
 
@@ -88,7 +93,7 @@ The default filter is **All**.
 
 ## User Roles
 
-The application uses role-based access to determine what each user can see and do.
+The application uses role-based access to determine what each user can see and do. Users are automatically assigned `user` role when registering through the application.
 
 A regular user can see their own maintenance requests, while maintenance staff can see all maintenance requests and perform actions such as:
 
