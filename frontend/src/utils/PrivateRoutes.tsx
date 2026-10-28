@@ -5,6 +5,11 @@ const PrivateRoutes = () => {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
+    // Dev authentication bypass
+    if (import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === "true") {
+      setAuthenticated(true);
+      return;
+    }
     const checkSession = async () => {
       try {
         const response = await fetch(
