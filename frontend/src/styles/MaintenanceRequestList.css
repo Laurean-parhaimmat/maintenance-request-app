@@ -156,12 +156,26 @@
   color: #64718b;
   font: inherit;
   cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.request-pagination button:hover:not(:disabled) {
+  background-color: #e8edf5;
+  color: #172033;
 }
 
 .request-pagination button[aria-current="page"] {
   border-color: #2865f5;
   background: #2865f5;
   color: white;
+}
+
+.request-pagination button[aria-current="page"]:hover {
+  border-color: #dce3ee;
+  background-color: #e8edf5;
+  color: #172033;
 }
 
 .request-pagination button:disabled {
