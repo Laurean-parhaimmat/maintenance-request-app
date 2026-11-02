@@ -18,7 +18,7 @@ const statusClassNames = {
 } as const;
 
 function formatDate(date: string) {
-  return new Intl.DateTimeFormat("fi-FI").format(new Date(`${date}T00:00:00`));
+  return new Intl.DateTimeFormat("fi-FI").format(new Date(date));
 }
 
 export default function MaintenanceRequestList({
