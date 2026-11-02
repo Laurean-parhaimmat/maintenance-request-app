@@ -3,6 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoutes = () => {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL;
 
   useEffect(() => {
     // Dev authentication bypass
@@ -14,7 +15,7 @@ const PrivateRoutes = () => {
     const checkSession = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/auth/get-session",
+          `${authUrl}/api/auth/get-session`,
           {
             credentials: "include",
           },
