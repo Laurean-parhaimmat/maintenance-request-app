@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { MaintenanceRequest } from "../data/sampleMaintenanceRequests";
+import "../styles/MaintenanceRequestList.css";
 
 type Props = { requests: MaintenanceRequest[]; pageSize?: number };
 

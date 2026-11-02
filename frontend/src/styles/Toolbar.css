@@ -1,0 +1,90 @@
+.maintenance-requests-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 94px;
+  margin-bottom: 22px;
+  padding: 14px 16px;
+  border: 1px solid #e0e6f0;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 2px 4px #243b6310;
+}
+
+.request-toolbar-search,
+.request-toolbar-select {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 64px;
+  padding: 0 20px;
+  border: 1px solid #cbd5e4;
+  border-radius: 14px;
+  color: #65738d;
+  gap: 16px;
+}
+
+.request-toolbar-search {
+  flex: 3;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: #f3f5fb;
+  color: #7891bd;
+}
+
+.request-toolbar-search:hover {
+  border-color: #94a3b8;
+  background: white;
+}
+
+.request-toolbar-search:focus-within {
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 2px #2563eb33;
+}
+
+.request-toolbar-search input,
+.request-toolbar-select select {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #5e6b83;
+  font: inherit;
+}
+
+.request-toolbar-search input::placeholder {
+  color: #8797b4;
+  opacity: 1;
+}
+
+.request-toolbar-select {
+  flex: 1;
+}
+
+.request-toolbar-select:hover {
+  border-color: #94a3b8;
+}
+
+.request-toolbar-select select {
+  cursor: pointer;
+}
+
+.request-toolbar-select option {
+  color: #27334b;
+}
+
+@media (max-width: 760px) {
+  .maintenance-requests-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .request-toolbar-search,
+  .request-toolbar-select {
+    flex: none;
+    width: 100%;
+  }
+}

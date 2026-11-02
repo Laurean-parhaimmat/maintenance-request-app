@@ -1,4 +1,5 @@
 import { Search as SearchIcon, Funnel } from "lucide-react";
+import "../styles/Toolbar.css";
 
 export type RequestStatusFilter = "all" | "new" | "in_progress" | "completed";
 export type RequestSort = "newest" | "oldest";
