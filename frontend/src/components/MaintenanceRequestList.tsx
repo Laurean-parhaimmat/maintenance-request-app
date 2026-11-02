@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { MaintenanceRequest } from "../data/sampleMaintenanceRequests";
 
 type Props = { requests: MaintenanceRequest[]; pageSize?: number };
@@ -92,7 +92,9 @@ export default function MaintenanceRequestList({
             aria-label="Edellinen sivu"
             disabled={currentPage <= 1}
             onClick={() => setPage(currentPage - 1)}
-          ></button>
+          >
+            <ChevronLeft aria-hidden="true" size={20} />
+          </button>
           {Array.from({ length: pageCount }, (_, index) => index + 1).map(
             (pageNumber) => (
               <button
