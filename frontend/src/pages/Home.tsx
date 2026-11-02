@@ -7,6 +7,7 @@ import Toolbar, {
 } from "../components/Toolbar";
 import { sampleMaintenanceRequests } from "../data/sampleMaintenanceRequests";
 import "../styles/Home.css";
+import { Plus } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -42,7 +43,9 @@ export default function Home() {
           type="button"
           onClick={() => navigate("/request/new")}
         >
-          <span aria-hidden="true">+</span>
+          <span aria-hidden="true">
+            <Plus />
+          </span>
           Uusi huoltopyyntö
         </button>
       </header>

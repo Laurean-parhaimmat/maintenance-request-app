@@ -36,16 +36,17 @@
 .maintenance-requests-new-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  max-width: 100%;
   gap: 10px;
   min-height: 58px;
   padding: 0 24px;
   border-radius: 12px;
-  background: #2865f5;
-  box-shadow: 0 10px 20px #2865f533;
-  color: white;
   font-size: 16px;
   font-weight: 600;
-  white-space: nowrap;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
 }
 
 .maintenance-requests-new-button span {
@@ -299,6 +300,9 @@
   }
 
   .maintenance-requests-new-button {
+    align-self: stretch;
+    width: 100%;
+    padding: 0 16px;
     min-height: 48px;
   }
 
