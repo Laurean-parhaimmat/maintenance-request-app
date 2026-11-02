@@ -112,13 +112,13 @@
   color: #215791;
 }
 
-.request-status-in_progress {
+.request-status-in-progress {
   border-color: #ffc26b;
   background: #ffebc9;
   color: #824814;
 }
 
-.request-status-completed {
+.request-status-resolved {
   border-color: #8ed6a1;
   background: #d9f0df;
   color: #28613a;

@@ -1,4 +1,4 @@
-export type MaintenanceStatus = "new" | "in_progress" | "completed";
+export type MaintenanceStatus = "new" | "in progress" | "resolved";
 
 export type MaintenanceRequest = {
   id: string;
@@ -22,28 +22,28 @@ export const sampleMaintenanceRequests: MaintenanceRequest[] = [
     title: "Parvekkeen ovi ei sulkeudu",
     category: "Ovet",
     createdAt: "2026-09-15",
-    status: "in_progress",
+    status: "in progress",
   },
   {
     id: "3",
     title: "Kylpyhuoneen valo ei toimi",
     category: "Sähkö",
     createdAt: "2026-09-10",
-    status: "in_progress",
+    status: "in progress",
   },
   {
     id: "4",
     title: "Keittiön hana vuotaa",
     category: "LVI",
     createdAt: "2026-09-01",
-    status: "completed",
+    status: "resolved",
   },
   {
     id: "5",
     title: "Ilmanvaihto ei toimi",
     category: "LVI",
     createdAt: "2026-08-15",
-    status: "in_progress",
+    status: "in progress",
   },
   {
     id: "6",
@@ -57,14 +57,14 @@ export const sampleMaintenanceRequests: MaintenanceRequest[] = [
     title: "Vesihana tiputtaa",
     category: "LVI",
     createdAt: "2026-07-29",
-    status: "completed",
+    status: "resolved",
   },
   {
     id: "8",
     title: "Ikkunan lukko jumittaa",
     category: "Ikkunat",
     createdAt: "2026-07-18",
-    status: "in_progress",
+    status: "in progress",
   },
   {
     id: "9",
@@ -78,6 +78,6 @@ export const sampleMaintenanceRequests: MaintenanceRequest[] = [
     title: "Lämmityspatteri kylmänä",
     category: "LVI",
     createdAt: "2026-06-21",
-    status: "completed",
+    status: "resolved",
   },
 ];

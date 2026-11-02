@@ -7,8 +7,14 @@ type Props = { requests: MaintenanceRequest[]; pageSize?: number };
 
 const statusLabels = {
   new: "Uusi",
-  in_progress: "Käsittelyssä",
-  completed: "Valmis",
+  "in progress": "Käsittelyssä",
+  resolved: "Valmis",
+} as const;
+
+const statusClassNames = {
+  new: "new",
+  "in progress": "in-progress",
+  resolved: "resolved",
 } as const;
 
 function formatDate(date: string) {
@@ -53,7 +59,7 @@ export default function MaintenanceRequestList({
                   <td>{formatDate(request.createdAt)}</td>
                   <td>
                     <span
-                      className={`request-status request-status-${request.status}`}
+                      className={`request-status request-status-${statusClassNames[request.status]}`}
                     >
                       {statusLabels[request.status]}
                     </span>

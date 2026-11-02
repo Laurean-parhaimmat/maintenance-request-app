@@ -1,7 +1,7 @@
 import { Search as SearchIcon, Funnel } from "lucide-react";
 import "../styles/Toolbar.css";
 
-export type RequestStatusFilter = "all" | "new" | "in_progress" | "completed";
+export type RequestStatusFilter = "all" | "new" | "in progress" | "resolved";
 export type RequestSort = "newest" | "oldest";
 
 type ToolbarProps = {
@@ -52,8 +52,8 @@ function Filter({
       >
         <option value="all">Kaikki tilat</option>
         <option value="new">Uusi</option>
-        <option value="in_progress">Käsittelyssä</option>
-        <option value="completed">Valmis</option>
+        <option value="in progress">Käsittelyssä</option>
+        <option value="resolved">Valmis</option>
       </select>
     </label>
   );
