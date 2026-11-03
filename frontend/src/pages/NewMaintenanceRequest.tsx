@@ -5,34 +5,32 @@ function NewMaintenanceRequest() {
   // Form field state management
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
-  const [urgency, setUrgency] = useState("");
-  const [image, setImage] = useState<File | null>(null);
+  const [buildingAddress, setBuildingAddress] = useState("");
+  const [apartmentNumber, setApartmentNumber] = useState("");
 
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  
+const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+  event.preventDefault();
 
-    const maintenanceRequest = {
-      title,
-      description,
-      location,
-      category,
-      urgency,
-      image,
-    };
-
-    console.log(maintenanceRequest);
+  const maintenanceRequest = {
+    title,
+    description,
+    category,
+    buildingAddress,
+    apartmentNumber,
   };
 
-  const handleCancel = () => {
-    setTitle("");
-    setDescription("");
-    setLocation("");
-    setCategory("");
-    setUrgency("");
-    setImage(null);
-  };
+  console.log(maintenanceRequest);
+};
+
+const handleCancel = () => {
+  setTitle("");
+  setDescription("");
+  setCategory("");
+  setBuildingAddress("");
+  setApartmentNumber("");
+};
 
   return (
     <div className="maintenance-page">
@@ -71,16 +69,31 @@ function NewMaintenanceRequest() {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="location">Sijainti (vapaaehtoinen)</label>
-            <input
-              id="location"
-              type="text"
-              placeholder="esim. Keittiö, kylpyhuone..."
-              value={location}
-              onChange={(event) => setLocation(event.target.value)}
-            />
-          </div>
+          
+<div className="form-group">
+  <label htmlFor="buildingAddress">Rakennuksen osoite *</label>
+  <input
+    id="buildingAddress"
+    type="text"
+    placeholder="Esim. Esimerkkikatu 10"
+    value={buildingAddress}
+    onChange={(event) => setBuildingAddress(event.target.value)}
+    required
+  />
+</div>
+
+<div className="form-group">
+  <label htmlFor="apartmentNumber">Asunnon numero *</label>
+  <input
+    id="apartmentNumber"
+    type="text"
+    placeholder="Esim. A 12"
+    value={apartmentNumber}
+    onChange={(event) => setApartmentNumber(event.target.value)}
+    required
+  />
+</div>
+
 
           <div className="form-row">
             <div className="form-group">
@@ -100,32 +113,6 @@ function NewMaintenanceRequest() {
                 <option value="other">Muu</option>
               </select>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="urgency">Kiireellisyys *</label>
-              <select
-                id="urgency"
-                value={urgency}
-                onChange={(event) => setUrgency(event.target.value)}
-                required
-              >
-                <option value="">Valitse kiireellisyys</option>
-                <option value="low">Matala</option>
-                <option value="medium">Normaali</option>
-                <option value="high">Kiireellinen</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="image">Lisää kuva (vapaaehtoinen)</label>
-            <input
-              id="image"
-              type="file"
-              accept=".jpg,.jpeg,.png"
-              onChange={(event) => setImage(event.target.files?.[0] || null)}
-            />
-            {image && <p>Valittu kuva: {image.name}</p>}
           </div>
 
           <div className="form-actions">
