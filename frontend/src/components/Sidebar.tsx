@@ -32,22 +32,18 @@ export default function Sidebar() {
       <nav className="sidebar-nav">
         <NavLink to="/">
           <Home size={20} />
-          <span>Etusivu</span>
+          <span className="sidebar-label">Etusivu</span>
         </NavLink>
 
         <NavLink to="/request/new">
           <PlusCircle size={20} />
-          <span>Uusi pyyntö</span>
+          <span className="sidebar-label">Uusi pyyntö</span>
         </NavLink>
       </nav>
 
-      <button
-        type="button"
-        className="sidebar-logout"
-        onClick={handleLogout}
-      >
+      <button type="button" className="sidebar-logout" onClick={handleLogout}>
         <LogOut size={20} />
-        <span>Kirjaudu ulos</span>
+        <span className="sidebar-label">Kirjaudu ulos</span>
       </button>
     </aside>
   );

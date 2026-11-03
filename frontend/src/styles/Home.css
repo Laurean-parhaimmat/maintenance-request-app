@@ -2,7 +2,8 @@
   box-sizing: border-box;
   width: 100%;
   min-height: 100%;
-  padding: 15px 20px 32px;
+  padding: 32px 32px;
+  gap: 24px;
   color: #27334b;
   text-align: left;
 }
@@ -16,21 +17,20 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  margin: 0 0 36px 36px;
+  margin: 0 0 30px;
 }
 
 .maintenance-requests-heading h1 {
-  margin: 0 0 2px;
-  color: #172033;
-  font-size: 27px;
+  margin: 0 0 10px;
+  color: #111827;
+  font-size: 30px;
   font-weight: 700;
   letter-spacing: -1px;
-  line-height: 1.2;
 }
 
 .maintenance-requests-heading p {
-  color: #68758d;
-  font-size: 20px;
+  color: #64748b;
+  font-size: 15px;
 }
 
 .maintenance-requests-new-button {
@@ -41,8 +41,8 @@
   gap: 10px;
   min-height: 58px;
   padding: 0 24px;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
   background-color: #2563eb;
   color: #ffffff;
@@ -85,7 +85,7 @@
   border: 0;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .maintenance-requests-page {
     padding: 28px 16px;
   }
@@ -106,5 +106,4 @@
     padding: 0 16px;
     min-height: 48px;
   }
-
 }

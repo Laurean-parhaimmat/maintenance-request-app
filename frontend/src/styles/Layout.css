@@ -72,6 +72,7 @@
 
 .sidebar {
   width: 260px;
+  flex-shrink: 0;
   min-height: calc(100vh - 88px);
   display: flex;
   flex-direction: column;
@@ -130,4 +131,29 @@
   color: #2563eb;
   background: #f8fafc;
   border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 72px;
+    padding: 30px 12px 24px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-nav a,
+  .sidebar-logout {
+    justify-content: center;
+    padding: 12px 0;
+    gap: 0;
+  }
+
+  .sidebar-nav a .sidebar-label,
+  .sidebar-logout .sidebar-label {
+    display: none;
+  }
+
+  .sidebar-nav svg,
+  .sidebar-logout svg {
+    flex-shrink: 0;
+  }
 }
