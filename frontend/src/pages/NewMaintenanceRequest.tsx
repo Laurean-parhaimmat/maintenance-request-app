@@ -9,28 +9,49 @@ function NewMaintenanceRequest() {
   const [buildingAddress, setBuildingAddress] = useState("");
   const [apartmentNumber, setApartmentNumber] = useState("");
 
-  
-const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
-  event.preventDefault();
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  const maintenanceRequest = {
-    title,
-    description,
-    category,
-    buildingAddress,
-    apartmentNumber,
+    const maintenanceRequest = {
+      title,
+      description,
+      category,
+      buildingAddress,
+      apartmentNumber,
+    };
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL}/api/maintenance`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(maintenanceRequest),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Huoltopyynnön lähettäminen epäonnistui");
+      }
+
+      alert("Huoltopyyntö lähetetty onnistuneesti!");
+      handleCancel();
+    } catch (error) {
+      console.error(error);
+      alert("Huoltopyynnön lähettäminen epäonnistui.");
+    }
   };
 
-  console.log(maintenanceRequest);
-};
-
-const handleCancel = () => {
-  setTitle("");
-  setDescription("");
-  setCategory("");
-  setBuildingAddress("");
-  setApartmentNumber("");
-};
+  const handleCancel = () => {
+    setTitle("");
+    setDescription("");
+    setCategory("");
+    setBuildingAddress("");
+    setApartmentNumber("");
+  };
 
   return (
     <div className="maintenance-page">
@@ -69,31 +90,29 @@ const handleCancel = () => {
             />
           </div>
 
-          
-<div className="form-group">
-  <label htmlFor="buildingAddress">Rakennuksen osoite *</label>
-  <input
-    id="buildingAddress"
-    type="text"
-    placeholder="Esim. Esimerkkikatu 10"
-    value={buildingAddress}
-    onChange={(event) => setBuildingAddress(event.target.value)}
-    required
-  />
-</div>
+          <div className="form-group">
+            <label htmlFor="buildingAddress">Rakennuksen osoite *</label>
+            <input
+              id="buildingAddress"
+              type="text"
+              placeholder="Esim. Esimerkkikatu 10"
+              value={buildingAddress}
+              onChange={(event) => setBuildingAddress(event.target.value)}
+              required
+            />
+          </div>
 
-<div className="form-group">
-  <label htmlFor="apartmentNumber">Asunnon numero *</label>
-  <input
-    id="apartmentNumber"
-    type="text"
-    placeholder="Esim. A 12"
-    value={apartmentNumber}
-    onChange={(event) => setApartmentNumber(event.target.value)}
-    required
-  />
-</div>
-
+          <div className="form-group">
+            <label htmlFor="apartmentNumber">Asunnon numero *</label>
+            <input
+              id="apartmentNumber"
+              type="text"
+              placeholder="Esim. A 12"
+              value={apartmentNumber}
+              onChange={(event) => setApartmentNumber(event.target.value)}
+              required
+            />
+          </div>
 
           <div className="form-row">
             <div className="form-group">
