@@ -85,6 +85,7 @@ function NewMaintenanceRequest() {
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="category">Kategoria *</label>
+
               <select
                 id="category"
                 value={category}
@@ -92,10 +93,10 @@ function NewMaintenanceRequest() {
                 required
               >
                 <option value="">Valitse kategoria</option>
-                <option value="water">Vesi ja viemäri</option>
                 <option value="electricity">Sähkö</option>
+                <option value="water">Vesi ja viemäri</option>
                 <option value="heating">Lämmitys</option>
-                <option value="apartment">Asunto</option>
+                <option value="doors_locks">Ovet ja lukot</option>
                 <option value="other">Muu</option>
               </select>
             </div>
