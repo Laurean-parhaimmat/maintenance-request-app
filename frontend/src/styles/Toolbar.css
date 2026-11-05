@@ -3,7 +3,7 @@
   align-items: center;
   gap: 12px;
   min-height: 94px;
-  /* margin-bottom: 22px; Temporarily removed in favor of consistent gaps from Home.css */
+  margin-bottom: 22px;
   padding: 14px 16px;
   border: 1px solid #e0e6f0;
   border-radius: 18px;
