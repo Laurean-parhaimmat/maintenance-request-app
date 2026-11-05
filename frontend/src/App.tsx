@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home";
+//import HomeUser from "./pages/Home-User";
+import HomeAdmin from "./pages/Home-Admin";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import NewMaintenanceRequest from "./pages/NewMaintenanceRequest";
@@ -18,7 +19,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route element={<PrivateRoutes />}>
           <Route element={<AppLayout />}>
-          <Route path="/" element={<Home />} />
+            <Route path="/" element={<HomeAdmin />} />
             <Route path="/request/new" element={<NewMaintenanceRequest />} />
           </Route>
         </Route>
