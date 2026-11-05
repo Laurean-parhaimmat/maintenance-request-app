@@ -102,6 +102,9 @@
 }
 
 .request-stat-card {
+  display: inherit;
+  flex-direction: column;
+  justify-content: space-between;
   max-width: 45%;
   width: auto;
   height: 160px;
@@ -162,6 +165,8 @@
 }
 
 .request-stat-value {
+  margin: 0;
+  width: fit-content;
   font-size: 36px;
   line-height: 20px;
   font-weight: bold;
@@ -188,5 +193,11 @@
     width: 100%;
     padding: 0 16px;
     min-height: 48px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .request-stat-card {
+    min-width: 30%;
   }
 }
