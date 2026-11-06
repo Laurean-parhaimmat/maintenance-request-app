@@ -2,11 +2,10 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { authClient } from "../lib/auth-client";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import "../styles/Login.css";
-
-const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL; // Hide backend connection port using environment variable
 
 const LoginSchema = z.object({
   email: z
@@ -47,7 +46,8 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${authUrl}/api/auth/sign-in/email`, {
+      /* Old login logic, restore if issues arise
+       const response = await fetch(`${authUrl}/api/auth/sign-in/email`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,10 +58,16 @@ export default function LoginPage() {
           password: data.password,
         }),
       });
+        */
+      // New login logic, keep if no issues
+      const { error } = await authClient.signIn.email({
+        email: data.email,
+        password: data.password,
+      });
 
-      if (!response.ok) {
+      if (error) {
         setError("root.serverError", {
-          type: String(response.status),
+          type: String(error.status),
         });
 
         return;
