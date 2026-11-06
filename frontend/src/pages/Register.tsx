@@ -47,6 +47,7 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<RegistrationInput>({
     resolver: zodResolver(RegistrationSchema),
@@ -76,7 +77,10 @@ export default function RegisterPage() {
       });
 
       if (!response.ok) {
-        // An error about email already existing would be useful here
+        // An error about email already existing
+        setError("root.serverError", {
+          type: String(response.status),
+        });
         return;
       }
 
@@ -196,6 +200,10 @@ export default function RegisterPage() {
             </div>
             {errors?.confirmPassword?.message && (
               <p className="login-error">{errors.confirmPassword.message}</p>
+            )}
+            {/* Notify user for already existing email address */}
+            {errors.root?.serverError?.type === "422" && (
+              <p className="login-error">Sähköposti on jo käytössä</p>
             )}
           </div>
 
