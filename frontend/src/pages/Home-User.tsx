@@ -26,7 +26,7 @@ type ApiMaintenanceRequest = {
   updatedAt: string;
 };
 
-export default function Home() {
+export default function HomeUser() {
   const navigate = useNavigate();
 
   const [requests, setRequests] = useState<MaintenanceRequest[]>([]);

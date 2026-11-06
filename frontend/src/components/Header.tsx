@@ -1,5 +1,4 @@
-import { Bell, Settings, UserCircle } from "lucide-react";
-
+import { Bell, UserCircle } from "lucide-react";
 
 export default function Header() {
   return (
@@ -14,10 +13,6 @@ export default function Header() {
       </div>
 
       <div className="app-header-actions">
-        <button type="button" aria-label="Asetukset">
-          <Settings size={22} />
-        </button>
-
         <button type="button" aria-label="Ilmoitukset">
           <Bell size={22} />
         </button>
