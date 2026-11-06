@@ -5,33 +5,52 @@ function NewMaintenanceRequest() {
   // Form field state management
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
-  const [urgency, setUrgency] = useState("");
-  const [image, setImage] = useState<File | null>(null);
+  const [buildingAddress, setBuildingAddress] = useState("");
+  const [apartmentNumber, setApartmentNumber] = useState("");
 
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const maintenanceRequest = {
       title,
       description,
-      location,
       category,
-      urgency,
-      image,
+      buildingAddress,
+      apartmentNumber,
     };
 
-    console.log(maintenanceRequest);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL}/api/maintenance`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(maintenanceRequest),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Huoltopyynnön lähettäminen epäonnistui");
+      }
+
+      alert("Huoltopyyntö lähetetty onnistuneesti!");
+      handleCancel();
+    } catch (error) {
+      console.error(error);
+      alert("Huoltopyynnön lähettäminen epäonnistui.");
+    }
   };
 
   const handleCancel = () => {
     setTitle("");
     setDescription("");
-    setLocation("");
     setCategory("");
-    setUrgency("");
-    setImage(null);
+    setBuildingAddress("");
+    setApartmentNumber("");
   };
 
   return (
@@ -72,19 +91,33 @@ function NewMaintenanceRequest() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="location">Sijainti (vapaaehtoinen)</label>
+            <label htmlFor="buildingAddress">Rakennuksen osoite *</label>
             <input
-              id="location"
+              id="buildingAddress"
               type="text"
-              placeholder="esim. Keittiö, kylpyhuone..."
-              value={location}
-              onChange={(event) => setLocation(event.target.value)}
+              placeholder="Esim. Esimerkkikatu 10"
+              value={buildingAddress}
+              onChange={(event) => setBuildingAddress(event.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="apartmentNumber">Asunnon numero *</label>
+            <input
+              id="apartmentNumber"
+              type="text"
+              placeholder="Esim. A 12"
+              value={apartmentNumber}
+              onChange={(event) => setApartmentNumber(event.target.value)}
+              required
             />
           </div>
 
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="category">Kategoria *</label>
+
               <select
                 id="category"
                 value={category}
@@ -92,39 +125,13 @@ function NewMaintenanceRequest() {
                 required
               >
                 <option value="">Valitse kategoria</option>
-                <option value="water">Vesi ja viemäri</option>
                 <option value="electricity">Sähkö</option>
+                <option value="water">Vesi ja viemäri</option>
                 <option value="heating">Lämmitys</option>
-                <option value="apartment">Asunto</option>
+                <option value="doors_locks">Ovet ja lukot</option>
                 <option value="other">Muu</option>
               </select>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="urgency">Kiireellisyys *</label>
-              <select
-                id="urgency"
-                value={urgency}
-                onChange={(event) => setUrgency(event.target.value)}
-                required
-              >
-                <option value="">Valitse kiireellisyys</option>
-                <option value="low">Matala</option>
-                <option value="medium">Normaali</option>
-                <option value="high">Kiireellinen</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="image">Lisää kuva (vapaaehtoinen)</label>
-            <input
-              id="image"
-              type="file"
-              accept=".jpg,.jpeg,.png"
-              onChange={(event) => setImage(event.target.files?.[0] || null)}
-            />
-            {image && <p>Valittu kuva: {image.name}</p>}
           </div>
 
           <div className="form-actions">
