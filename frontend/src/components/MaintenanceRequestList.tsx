@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { MaintenanceRequest } from "../data/sampleMaintenanceRequests";
+import type { MaintenanceRequest } from "../types/maintenanceRequest";
+import { useNavigate } from "react-router-dom";
 import "../styles/MaintenanceRequestList.css";
 
 type Props = { requests: MaintenanceRequest[]; pageSize?: number };
+
 
 const statusLabels = {
   new: "Uusi",
@@ -17,14 +19,23 @@ const statusClassNames = {
   resolved: "resolved",
 } as const;
 
+const categoryLabels = {
+  electricity: "Sähkö",
+  water: "Vesi",
+  heating: "Lämmitys",
+  doors_locks: "Ovet ja lukot",
+  other: "Muu",
+} as const;
+
 function formatDate(date: string) {
   return new Intl.DateTimeFormat("fi-FI").format(new Date(date));
 }
 
 export default function MaintenanceRequestList({
   requests,
-  pageSize = 8,
+  pageSize = 6,
 }: Props) {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const pageCount = Math.max(1, Math.ceil(requests.length / pageSize));
   const currentPage = Math.min(page, pageCount);
@@ -55,7 +66,7 @@ export default function MaintenanceRequestList({
               {visibleRequests.map((request) => (
                 <tr key={request.id}>
                   <td className="request-title">{request.title}</td>
-                  <td>{request.category}</td>
+                  <td>{categoryLabels[request.category]}</td>
                   <td>{formatDate(request.createdAt)}</td>
                   <td>
                     <span
@@ -66,9 +77,10 @@ export default function MaintenanceRequestList({
                   </td>
                   <td className="request-action">
                     <button
-                      type="button"
-                      aria-label={`Avaa pyyntö: ${request.title}`}
-                    >
+                        type="button"
+                        aria-label={`Avaa pyyntö: ${request.title}`}
+                        onClick={() => navigate(`/request/${request.id}`)}
+                      >
                       <ChevronRight aria-hidden="true" size={24} />
                     </button>
                   </td>
