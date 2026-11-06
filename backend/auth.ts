@@ -8,9 +8,7 @@ import { admin } from "better-auth/plugins";
 const mongoUri = process.env.MONGODB_URI;
 
 if (!mongoUri) {
-  throw new Error(
-    "MONGODB_URI is missing from environment variables"
-  );
+  throw new Error("MONGODB_URI is missing from environment variables");
 }
 
 const client = new MongoClient(mongoUri);
@@ -25,11 +23,17 @@ export const auth = betterAuth({
     enabled: true,
   },
 
-  plugins: [
-    admin(),
-  ],
+  plugins: [admin()],
 
-  trustedOrigins: [
-    "http://localhost:5173",
-  ],
+  trustedOrigins: ["http://localhost:5173"],
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: true,
+        defaultValue: "user",
+        input: false,
+      },
+    },
+  },
 });
