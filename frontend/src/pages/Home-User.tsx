@@ -9,7 +9,7 @@ import { sampleMaintenanceRequests } from "../data/sampleMaintenanceRequests";
 import "../styles/Home.css";
 import { Plus } from "lucide-react";
 
-export default function Home() {
+export default function HomeUser() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<RequestStatusFilter>("all");
