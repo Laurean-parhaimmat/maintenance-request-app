@@ -43,41 +43,29 @@ export default function LoginPage() {
   });
 
   const onLogin = async (data: LoginInput) => {
-    setLoading(true);
-
     try {
-      /* Old login logic, restore if issues arise
-       const response = await fetch(`${authUrl}/api/auth/sign-in/email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
+      await authClient.signIn.email(
+        {
           email: data.email,
           password: data.password,
-        }),
-      });
-        */
-      // New login logic, keep if no issues
-      const { error } = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-      });
-
-      if (error) {
-        setError("root.serverError", {
-          type: String(error.status),
-        });
-
-        return;
-      }
-
-      navigate("/");
+        },
+        {
+          onRequest: () => {
+            setLoading(true);
+          },
+          onSuccess: () => {
+            setLoading(false);
+            navigate("/");
+          },
+          onError: (ctx) => {
+            setError("root.serverError", {
+              type: String(ctx.error.status),
+            });
+          },
+        },
+      );
     } catch (err) {
       console.error("Kirjautuminen epäonnistui", err);
-    } finally {
-      setLoading(false);
     }
   };
 

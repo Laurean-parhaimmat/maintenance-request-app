@@ -2,11 +2,10 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { authClient } from "../lib/auth-client";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail, UserPen } from "lucide-react";
 import "../styles/Login.css";
-
-const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL; // Hide backend connection port using environment variable
 
 const RegistrationSchema = z
   .object({
@@ -61,8 +60,9 @@ export default function RegisterPage() {
   });
 
   const onRegister = async (data: RegistrationInput) => {
-    setLoading(true);
+    //setLoading(true);
     try {
+      /*
       const response = await fetch(`${authUrl}/api/auth/sign-up/email`, {
         method: "POST",
         headers: {
@@ -74,21 +74,31 @@ export default function RegisterPage() {
           email: data.email,
           password: data.password,
         }),
-      });
+      }); */
 
-      if (!response.ok) {
-        // An error about email already existing
-        setError("root.serverError", {
-          type: String(response.status),
-        });
-        return;
-      }
-
-      navigate("/login");
+      await authClient.signUp.email(
+        {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        },
+        {
+          onRequest: () => {
+            setLoading(true);
+          },
+          onSuccess: () => {
+            navigate("/login");
+            setLoading(false);
+          },
+          onError: (ctx) => {
+            setError("root.serverError", {
+              type: String(ctx.error.status),
+            });
+          },
+        },
+      );
     } catch (err) {
       console.error("Rekisterönti epäonnistui", err);
-    } finally {
-      setLoading(false);
     }
   };
 
