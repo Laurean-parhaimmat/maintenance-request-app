@@ -21,18 +21,21 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
   },
 
   plugins: [admin()],
 
   trustedOrigins: ["http://localhost:5173"],
+
+  // Role based authentication
   user: {
     additionalFields: {
       role: {
         type: "string",
         required: true,
         defaultValue: "user",
-        input: false,
+        input: false, // Prevent users from self-assigning admin on registration
       },
     },
   },
