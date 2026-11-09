@@ -172,13 +172,16 @@ export default function RequestDetails() {
           </div>
 
             {isAdmin ? (
-              <div>
-                <label htmlFor="request-status">
+              <div className="request-status-control">
+                <label 
+                  className="request-status-label" 
+                  htmlFor="request-status">
                   Tila
                 </label>
 
                 <select
                   id="request-status"
+                  className="request-status-select"
                   value={request.status}
                   disabled={updatingStatus}
                   onChange={(event) =>
