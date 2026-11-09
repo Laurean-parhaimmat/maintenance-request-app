@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { MaintenanceRequest } from "../types/maintenanceRequest";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import type { MaintenanceRequest } from "../data/sampleMaintenanceRequests";
 import "../styles/MaintenanceRequestList.css";
 
 type Props = { requests: MaintenanceRequest[]; pageSize?: number };
@@ -66,15 +64,8 @@ export default function MaintenanceRequestList({
             <tbody>
               {visibleRequests.map((request) => (
                 <tr key={request.id}>
-                  <td className="request-title">
-                    <Link
-                      to={`/request/${request.id}`}
-                      className="request-title-link"
-                    >
-                      {request.title}
-                    </Link>
-                  </td>
-                  <td>{categoryLabels[request.category]}</td>
+                  <td className="request-title">{request.title}</td>
+                  <td>{request.category}</td>
                   <td>{formatDate(request.createdAt)}</td>
                   <td>
                     <span
