@@ -183,6 +183,16 @@
   cursor: default;
 }
 
+.request-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.request-title-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
 @media (max-width: 760px) {
   .maintenance-requests-card {
     padding: 18px 14px 0;
