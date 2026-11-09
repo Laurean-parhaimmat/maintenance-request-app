@@ -13,9 +13,10 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="*" element={<NotFound />} />
+        {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
         <Route element={<PrivateRoutes />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<RoleBasedHome />} />
@@ -23,6 +24,8 @@ function App() {
             <Route path="/request/:id" element={<RequestDetails />} />
           </Route>
         </Route>
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

@@ -11,7 +11,7 @@ export const authClient = createAuthClient({
           type: "string",
           required: true,
           defaultValue: "user",
-          input: false,
+          input: false, // Prevent users from self-assigning admin on registration
         },
       },
     }),
