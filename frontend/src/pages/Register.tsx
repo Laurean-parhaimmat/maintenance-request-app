@@ -60,22 +60,7 @@ export default function RegisterPage() {
   });
 
   const onRegister = async (data: RegistrationInput) => {
-    //setLoading(true);
     try {
-      /*
-      const response = await fetch(`${authUrl}/api/auth/sign-up/email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "omit", // Just registering new account does not create a login session
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          password: data.password,
-        }),
-      }); */
-
       await authClient.signUp.email(
         {
           name: data.name,
