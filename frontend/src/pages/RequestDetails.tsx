@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-
+import type { MaintenanceStatus } from "../types/maintenanceRequest";
 import "../styles/RequestDetails.css";
 
 const apiUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL;
@@ -13,7 +13,7 @@ type MaintenanceRequestDetails = {
   category: "electricity" | "water" | "heating" | "doors_locks" | "other";
   buildingAddress: string;
   apartmentNumber: string;
-  status: "new" | "in progress" | "resolved";
+  status: MaintenanceStatus;
   createdAt: string;
   updatedAt: string;
 };
@@ -41,6 +41,9 @@ export default function RequestDetails() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [statusError, setStatusError] = useState("");
 
   useEffect(() => {
     const fetchRequest = async () => {
@@ -69,6 +72,72 @@ export default function RequestDetails() {
 
     fetchRequest();
   }, [id]);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const response = await fetch(
+          `${apiUrl}/api/auth/get-session`,
+          {
+            credentials: "include",
+          },
+        );
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+
+        setIsAdmin(data?.user?.role === "admin");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+      fetchSession();
+    }, []);
+
+    const handleStatusChange = async (
+      status: MaintenanceStatus,
+    ) => {
+      if (!request) {
+        return;
+      }
+
+      setUpdatingStatus(true);
+      setStatusError("");
+
+      try {
+        const response = await fetch(
+          `${apiUrl}/api/maintenance/${request._id}/status`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({
+              status,
+            }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Statuksen päivittäminen epäonnistui");
+        }
+
+        const updatedRequest: MaintenanceRequestDetails =
+          await response.json();
+
+        setRequest(updatedRequest);
+      } catch (error) {
+        console.error(error);
+        setStatusError("Statuksen päivittäminen epäonnistui.");
+      } finally {
+        setUpdatingStatus(false);
+      }
+    };
 
   if (loading) {
     return <p>Ladataan huoltopyyntöä...</p>;
@@ -102,9 +171,43 @@ export default function RequestDetails() {
             </p>
           </div>
 
-          <span className={`request-details-status ${request.status}`}>
-            {statusLabels[request.status]}
-          </span>
+            {isAdmin ? (
+              <div className="request-status-control">
+                <label 
+                  className="request-status-label" 
+                  htmlFor="request-status">
+                  Tila
+                </label>
+
+                <select
+                  id="request-status"
+                  className="request-status-select"
+                  value={request.status}
+                  disabled={updatingStatus}
+                  onChange={(event) =>
+                    handleStatusChange(
+                      event.target.value as MaintenanceStatus,
+                    )
+                  }
+                >
+                  <option value="new">Uusi</option>
+                  <option value="in progress">
+                    Käsittelyssä
+                  </option>
+                  <option value="resolved">
+                    Valmis
+                  </option>
+                </select>
+
+                {statusError && <p>{statusError}</p>}
+              </div>
+            ) : (
+              <span
+                className={`request-details-status ${request.status}`}
+              >
+                {statusLabels[request.status]}
+              </span>
+            )}
         </div>
 
         <div className="request-details-grid">

@@ -95,6 +95,48 @@
   border-top: 1px solid #e5e7eb;
 }
 
+.request-status-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.request-status-label {
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.request-status-select {
+  min-width: 170px;
+  padding: 9px 36px 9px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.request-status-select:hover {
+  border-color: #94a3b8;
+}
+
+.request-status-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.request-status-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .request-details-page {
     padding: 20px 16px;
