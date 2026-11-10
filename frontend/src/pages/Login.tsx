@@ -58,6 +58,7 @@ export default function LoginPage() {
             navigate("/");
           },
           onError: (ctx) => {
+            setLoading(false);
             setError("root.serverError", {
               type: String(ctx.error.status),
             });
