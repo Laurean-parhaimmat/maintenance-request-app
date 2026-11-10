@@ -2,11 +2,10 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { authClient } from "../lib/auth-client";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail, UserPen } from "lucide-react";
 import "../styles/Login.css";
-
-const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL; // Hide backend connection port using environment variable
 
 const RegistrationSchema = z
   .object({
@@ -47,6 +46,7 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<RegistrationInput>({
     resolver: zodResolver(RegistrationSchema),
@@ -60,31 +60,30 @@ export default function RegisterPage() {
   });
 
   const onRegister = async (data: RegistrationInput) => {
-    setLoading(true);
     try {
-      const response = await fetch(`${authUrl}/api/auth/sign-up/email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "omit", // Just registering new account does not create a login session
-        body: JSON.stringify({
+      await authClient.signUp.email(
+        {
           name: data.name,
           email: data.email,
           password: data.password,
-        }),
-      });
-
-      if (!response.ok) {
-        // An error about email already existing would be useful here
-        return;
-      }
-
-      navigate("/login");
+        },
+        {
+          onRequest: () => {
+            setLoading(true);
+          },
+          onSuccess: () => {
+            navigate("/login");
+            setLoading(false);
+          },
+          onError: (ctx) => {
+            setError("root.serverError", {
+              type: String(ctx.error.status),
+            });
+          },
+        },
+      );
     } catch (err) {
       console.error("Rekisterönti epäonnistui", err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -196,6 +195,10 @@ export default function RegisterPage() {
             </div>
             {errors?.confirmPassword?.message && (
               <p className="login-error">{errors.confirmPassword.message}</p>
+            )}
+            {/* Notify user for already existing email address */}
+            {errors.root?.serverError?.type === "422" && (
+              <p className="login-error">Sähköposti on jo käytössä</p>
             )}
           </div>
 
