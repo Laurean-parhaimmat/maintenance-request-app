@@ -7,6 +7,9 @@ import { admin } from "better-auth/plugins";
 
 const mongoUri = process.env.MONGODB_URI;
 
+const frontendUrl =
+  process.env.FRONTEND_URL || "http://localhost:5173";
+
 if (!mongoUri) {
   throw new Error("MONGODB_URI is missing from environment variables");
 }
@@ -26,7 +29,7 @@ export const auth = betterAuth({
 
   plugins: [admin()],
 
-  trustedOrigins: ["http://localhost:5173"],
+  trustedOrigins: [frontendUrl],
 
   // Role based authentication
   user: {
