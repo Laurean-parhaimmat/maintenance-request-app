@@ -31,6 +31,14 @@ export const auth = betterAuth({
 
   trustedOrigins: [frontendUrl],
 
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    },
+  },
+
   // Role based authentication
   user: {
     additionalFields: {
