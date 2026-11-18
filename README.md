@@ -11,8 +11,6 @@ The application includes authentication, role-based access control, validation, 
 **Frontend:**  
 https://maintenance-request-frontend.onrender.com
 
-**Backend:**  
-https://maintenance-request-backend.onrender.com
 
 > The services are hosted on Render's free tier, so the backend may take a short moment to start after a period of inactivity.
 
@@ -30,8 +28,6 @@ Residents can:
 - View their own maintenance requests
 - View request details
 - Filter requests by status
-- Edit their own maintenance requests
-- Delete their own maintenance requests
 - Track the status of submitted requests
 
 New users are automatically assigned the `user` role.
@@ -45,7 +41,6 @@ Administrators can:
 - Filter and sort maintenance requests
 - View individual request details
 - Change the status of maintenance requests
-- Delete maintenance requests
 
 Administrators cannot edit the content of a maintenance request. They can only manage its status.
 
