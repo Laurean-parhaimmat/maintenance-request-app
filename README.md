@@ -2,17 +2,16 @@
 
 A full-stack maintenance request application for residents and maintenance administrators.
 
-Residents can create and track their own maintenance requests, while administrators can view all requests and update their status.
+Residents can create and track their own maintenance requests, while administrators can view requests from all users and manage their status.
 
-The application includes authentication, role-based access control, validation, a MongoDB database, and separate frontend and backend deployments.
+The application includes authentication, role-based access control, frontend and backend validation, a MongoDB database, and separate frontend and backend deployments.
 
 ## Live Application
 
 **Frontend:**  
 https://maintenance-request-frontend.onrender.com
 
-
-> The services are hosted on Render's free tier, so the backend may take a short moment to start after a period of inactivity.
+The frontend is deployed as a Render Static Site and the backend as a Render Web Service.
 
 ---
 
@@ -23,14 +22,18 @@ https://maintenance-request-frontend.onrender.com
 Residents can:
 
 - Register a new account
-- Log in securely
+- Log in
 - Create maintenance requests
 - View their own maintenance requests
-- View request details
+- Search maintenance requests
 - Filter requests by status
+- Sort requests by creation date
+- View request details
 - Track the status of submitted requests
 
 New users are automatically assigned the `user` role.
+
+The current frontend does not provide controls for editing or deleting maintenance requests, although the backend API supports these operations for requests owned by the authenticated user.
 
 ### Administrators
 
@@ -38,11 +41,18 @@ Administrators can:
 
 - Log in using an administrator account
 - View maintenance requests from all users
-- Filter and sort maintenance requests
+- Search maintenance requests
+- Filter requests by status
+- Sort requests by creation date
+- View request statistics by status
 - View individual request details
 - Change the status of maintenance requests
 
-Administrators cannot edit the content of a maintenance request. They can only manage its status.
+The admin interface does not allow administrators to edit the content of a maintenance request.
+
+The backend explicitly prevents administrators from using the general maintenance request update endpoint. Administrators use the dedicated status endpoint for status changes.
+
+The backend API also allows administrators to delete maintenance requests, although deletion is not currently exposed as a control in the frontend.
 
 ---
 
@@ -90,6 +100,7 @@ Maintenance requests can use the following categories:
 - Lucide React
 - Vitest
 - Testing Library
+- Oxlint
 
 ### Backend
 
@@ -100,6 +111,7 @@ Maintenance requests can use the following categories:
 - Mongoose
 - Better Auth
 - Better Auth MongoDB Adapter
+- Better Auth Admin Plugin
 - Zod
 - CORS
 
@@ -113,78 +125,121 @@ Maintenance requests can use the following categories:
 
 ## Authentication and Authorization
 
-Authentication is handled with **Better Auth**.
+Authentication is handled with **Better Auth** using email and password authentication.
 
-The backend uses the Better Auth MongoDB adapter and the Better Auth admin plugin.
+The backend uses:
+
+- Better Auth
+- Better Auth MongoDB Adapter
+- Better Auth Admin Plugin
+- Session-based authentication
 
 Two application roles are currently used:
 
 | Role | Access |
 |---|---|
-| `user` | Can manage their own maintenance requests |
-| `admin` | Can view all maintenance requests and change their status |
+| `user` | Can access their own maintenance requests |
+| `admin` | Can access all maintenance requests and update their status |
 
-New users are assigned the `user` role automatically.
+New users are automatically assigned the `user` role.
 
-Users cannot assign themselves the `admin` role during registration.
+The `role` field is configured with `input: false`, which prevents users from assigning themselves the `admin` role during normal registration.
 
-Protected backend routes verify the active Better Auth session before allowing access.
+Administrative privileges must therefore be assigned separately from the public registration form.
 
-The production frontend and backend are deployed as separate Render services. Authentication cookies are configured with secure cross-site cookie settings for the production environment.
+Protected maintenance request routes use authentication middleware that verifies the active Better Auth session before allowing access.
+
+Role and ownership checks are also performed on the backend instead of relying only on the frontend.
+
+### Authentication Cookies
+
+The production frontend and backend are deployed on separate Render origins.
+
+Better Auth cookies are therefore configured with:
+
+```text
+SameSite=None
+Secure=true
+HttpOnly=true
+```
+
+The backend also restricts trusted origins and CORS requests to the configured frontend URL.
 
 ---
 
-###Validation
+## Validation
 
-The application uses Zod on both the frontend and backend.
+The project uses **Zod on both the frontend and backend**, but for different purposes.
 
-##Frontend Validation
+### Frontend Validation
 
-The frontend uses Zod together with React Hook Form and zodResolver.
+The Login and Registration forms use:
 
-Zod schemas are used for client-side validation on authentication forms such as:
+- Zod
+- React Hook Form
+- `zodResolver`
 
--Login
+The Login form validates:
 
--Registration
+- Required email
+- Valid email format
+- Required password
+- Password length between 8 and 30 characters
 
--Email format
+The Registration form validates:
 
--Password requirements
+- Required name
+- Name length between 3 and 40 characters
+- Required and valid email
+- Password length between 8 and 30 characters
+- Password confirmation
+- Matching passwords
 
--Required form fields
+This allows invalid authentication form input to be detected before an authentication request is sent.
 
-This allows invalid input to be detected before a request is sent to the backend and provides immediate validation feedback to the user.
+The maintenance request form currently uses standard HTML form validation such as `required`. Maintenance request data is then fully validated by the backend before being stored.
 
-##Backend Validation
+### Backend Validation
 
-The backend uses Zod to validate incoming maintenance request API data.
+The backend uses Zod for maintenance request API validation.
 
-Backend validation is used for:
+Validation includes:
 
--Creating maintenance requests
+- Creating maintenance requests
+- Updating maintenance requests
+- Updating maintenance request status
+- Validating maintenance request IDs
+- Validating allowed maintenance categories
+- Validating allowed maintenance statuses
+- Rejecting unexpected fields
 
--Updating maintenance requests
+Current backend validation limits include:
 
--Updating maintenance request status
+| Field | Validation |
+|---|---|
+| `title` | Required, maximum 150 characters |
+| `description` | Required, maximum 5000 characters |
+| `buildingAddress` | Required, maximum 200 characters |
+| `apartmentNumber` | Required, maximum 20 characters |
+| `category` | Must be one of the supported categories |
+| `status` | Must be one of the supported statuses |
+| Request ID | Must be a 24-character hexadecimal MongoDB-style ID |
 
--Validating maintenance request IDs
+The update schema also requires at least one field to be provided when updating a maintenance request.
 
--Validating allowed maintenance categories
+The backend does not rely on frontend validation. Incoming maintenance request data is validated again on the server before it is processed or stored in MongoDB.
 
--Validating allowed maintenance statuses
-
-The backend does not rely only on frontend validation. Incoming API data is validated again on the server before it is processed or stored in MongoDB.
-
-Invalid requests return an appropriate HTTP error response instead of being written directly to the database.
+Invalid input returns an HTTP error response instead of being written directly to the database.
 
 ---
 
 ## Database
 
-The application uses **MongoDB Atlas**.
+The deployed application uses **MongoDB Atlas**.
 
-Maintenance requests contain data such as:
+Maintenance requests are stored in the `maintenance_requests` collection.
+
+A maintenance request contains:
 
 - User ID
 - Title
@@ -193,18 +248,22 @@ Maintenance requests contain data such as:
 - Building address
 - Apartment number
 - Status
-- Creation date
-- Update date
+- Creation timestamp
+- Update timestamp
 
 Each maintenance request is associated with the authenticated user who created it.
 
-Better Auth also stores authentication-related data in MongoDB.
+The backend uses Mongoose for maintenance request data.
+
+Better Auth uses its MongoDB adapter to store authentication-related data in MongoDB.
+
+The frontend does not connect directly to MongoDB. All application data is accessed through the backend API.
 
 ---
 
 ## API
 
-The backend is available under:
+The backend is available at:
 
 ```text
 https://maintenance-request-backend.onrender.com
@@ -226,27 +285,66 @@ POST /api/auth/sign-in/email
 GET  /api/auth/get-session
 ```
 
+Authentication requests are handled by Better Auth.
+
 ### Maintenance Requests
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `POST` | `/api/maintenance` | Create a maintenance request |
-| `GET` | `/api/maintenance` | Get maintenance requests |
-| `GET` | `/api/maintenance/:id` | Get a single maintenance request |
-| `PATCH` | `/api/maintenance/:id` | Update a user's maintenance request |
-| `PATCH` | `/api/maintenance/:id/status` | Update request status as admin |
-| `DELETE` | `/api/maintenance/:id` | Delete a maintenance request |
+All maintenance request endpoints require an authenticated Better Auth session.
 
-All maintenance request routes require authentication.
+| Method | Endpoint | Access | Description |
+|---|---|---|---|
+| `POST` | `/api/maintenance` | Authenticated user | Create a maintenance request |
+| `GET` | `/api/maintenance` | Authenticated user | Get accessible maintenance requests |
+| `GET` | `/api/maintenance/:id` | Owner or admin | Get a single maintenance request |
+| `PATCH` | `/api/maintenance/:id` | Owner | Update a maintenance request |
+| `PATCH` | `/api/maintenance/:id/status` | Admin only | Update maintenance request status |
+| `DELETE` | `/api/maintenance/:id` | Owner or admin | Delete a maintenance request |
 
-For `GET /api/maintenance`:
+### Role-Based API Behavior
 
-- A regular user receives only their own requests.
-- An administrator receives all requests.
+For:
 
-For `PATCH /api/maintenance/:id/status`:
+```text
+GET /api/maintenance
+```
 
-- Only administrators are allowed to update the status.
+- A regular user receives only maintenance requests associated with their user ID.
+- An administrator receives all maintenance requests.
+
+For:
+
+```text
+GET /api/maintenance/:id
+```
+
+- A regular user can only access their own request.
+- An administrator can access any request.
+
+For:
+
+```text
+PATCH /api/maintenance/:id
+```
+
+- A regular user can update their own request.
+- An administrator is explicitly blocked from this endpoint.
+
+For:
+
+```text
+PATCH /api/maintenance/:id/status
+```
+
+- Only administrators can update the request status.
+
+For:
+
+```text
+DELETE /api/maintenance/:id
+```
+
+- A regular user can delete their own request.
+- An administrator can delete any request.
 
 ---
 
@@ -265,6 +363,7 @@ maintenance-request-app/
 │   ├── auth.ts
 │   ├── server.ts
 │   ├── package.json
+│   ├── package-lock.json
 │   └── tsconfig.json
 │
 ├── frontend/
@@ -277,9 +376,13 @@ maintenance-request-app/
 │   │   ├── tests/
 │   │   ├── types/
 │   │   └── utils/
+│   ├── index.html
 │   ├── package.json
+│   ├── package-lock.json
+│   ├── tsconfig.json
 │   └── vite.config.ts
 │
+├── .gitignore
 └── README.md
 ```
 
@@ -289,11 +392,11 @@ maintenance-request-app/
 
 ### Requirements
 
-Before running the application locally, install:
+Before running the project locally, install:
 
 - Node.js
 - npm
-- MongoDB Atlas database or another compatible MongoDB instance
+- Access to a MongoDB database
 
 Clone the repository:
 
@@ -301,6 +404,8 @@ Clone the repository:
 git clone https://github.com/Laurean-parhaimmat/maintenance-request-app.git
 cd maintenance-request-app
 ```
+
+The frontend and backend have separate `package.json` files and dependencies.
 
 ---
 
@@ -333,7 +438,7 @@ Start the backend development server:
 npm run dev
 ```
 
-The backend runs by default at:
+The backend uses port `5000` by default:
 
 ```text
 http://localhost:5000
@@ -368,13 +473,13 @@ Create a `.env` file inside the `frontend` directory:
 VITE_REACT_APP_BETTER_AUTH_URL=http://localhost:5000
 ```
 
-Start the frontend:
+Start the frontend development server:
 
 ```bash
 npm run dev
 ```
 
-The frontend runs by default at:
+Vite uses the following address by default:
 
 ```text
 http://localhost:5173
@@ -382,37 +487,55 @@ http://localhost:5173
 
 ---
 
-## Testing
+## Testing and Code Quality
 
-Frontend tests use **Vitest** and **Testing Library**.
+Frontend tests use **Vitest**, **jsdom**, and **Testing Library**.
 
-Run the tests from the frontend directory:
+Run the frontend tests:
 
 ```bash
+cd frontend
 npm test
 ```
 
-Build the frontend with:
+Build the frontend:
 
 ```bash
 npm run build
 ```
 
-Run the frontend linter with:
+Run the frontend linter:
 
 ```bash
 npm run lint
+```
+
+The current repository does not define a backend test script.
+
+The backend TypeScript build can be checked with:
+
+```bash
+cd backend
+npm run build
 ```
 
 ---
 
 ## Production Deployment
 
-The project is deployed to Render using two separate services.
+The project is currently deployed to Render using two separate services.
+
+Both services deploy from the `main` branch.
 
 ### Frontend
 
 The frontend is deployed as a Render **Static Site**.
+
+URL:
+
+```text
+https://maintenance-request-frontend.onrender.com
+```
 
 Build command:
 
@@ -426,7 +549,7 @@ Publish directory:
 frontend/dist
 ```
 
-Production environment variable:
+The frontend uses the following production environment variable:
 
 ```env
 VITE_REACT_APP_BETTER_AUTH_URL=https://maintenance-request-backend.onrender.com
@@ -434,7 +557,13 @@ VITE_REACT_APP_BETTER_AUTH_URL=https://maintenance-request-backend.onrender.com
 
 ### Backend
 
-The backend is deployed as a Render **Web Service**.
+The backend is deployed as a Render **Web Service** in the Frankfurt region.
+
+URL:
+
+```text
+https://maintenance-request-backend.onrender.com
+```
 
 Build command:
 
@@ -448,24 +577,41 @@ Start command:
 cd backend && npm start
 ```
 
-The backend requires production environment variables for MongoDB, Better Auth and the frontend URL.
+The backend uses Render's Free web-service plan.
 
-Production secrets such as `MONGODB_URI` and `BETTER_AUTH_SECRET` must only be stored in Render's environment variable configuration and must never be committed to the repository.
+Production configuration requires environment variables for:
+
+```text
+MONGODB_URI
+FRONTEND_URL
+BETTER_AUTH_URL
+BETTER_AUTH_SECRET
+```
+
+Render also provides the runtime `PORT` environment variable automatically.
+
+Production secrets such as `MONGODB_URI` and `BETTER_AUTH_SECRET` must not be committed to the repository.
 
 ---
 
 ## Security
 
-The application currently includes several security measures:
+The application currently includes the following security-related measures:
 
 - Better Auth session-based authentication
+- Email and password authentication
 - Role-based authorization
-- Protected maintenance request API routes
-- Server-side Zod validation
-- Users can only access their own maintenance requests
+- Backend session verification for protected API routes
+- Ownership checks for user-specific maintenance requests
 - Administrator-only status updates
-- Secure HTTP-only authentication cookies
+- Prevention of self-assigned administrator roles during registration
+- Backend Zod validation
+- Strict maintenance request validation schemas
 - CORS restricted to the configured frontend origin
+- Credentialed CORS requests
+- `HttpOnly` authentication cookies
+- `Secure` authentication cookies
+- `SameSite=None` cookies for the separate production frontend and backend origins
 - Authentication secrets stored in environment variables
 - MongoDB credentials stored outside the source code
 
@@ -473,8 +619,17 @@ The application currently includes several security measures:
 
 ## Current Status
 
-The application currently supports the complete basic maintenance request workflow:
+The application currently supports the basic maintenance request workflow:
 
-`Registration → Login → Create Request → Track Request → Admin Processing → Resolved`
+```text
+Registration
+→ Login
+→ Create Maintenance Request
+→ View and Track Request
+→ Administrator Updates Status
+→ Resolved
+```
 
-Both the frontend and backend are deployed and connected to MongoDB Atlas.
+The frontend and backend are both deployed on Render.
+
+The frontend communicates with the backend through HTTPS API requests, and the backend is connected to MongoDB Atlas.
