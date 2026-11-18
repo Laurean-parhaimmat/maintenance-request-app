@@ -6,6 +6,10 @@ Residents can create and track their own maintenance requests, while administrat
 
 The application includes authentication, role-based access control, frontend and backend validation, a MongoDB database, and separate frontend and backend deployments.
 
+## Language Support
+ 
+The current MVP is available in Finnish only. The application's user interface and content are currently presented in Finnish. English language support is not yet implemented.
+
 ## Live Application
 
 **Frontend:**  
