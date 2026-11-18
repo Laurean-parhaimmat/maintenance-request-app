@@ -518,6 +518,11 @@ The backend TypeScript build can be checked with:
 cd backend
 npm run build
 ```
+---
+
+## Known Issues
+
+_No known issues documented yet._
 
 ---
 
