@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Bell, UserCircle } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export default function Header() {
             <div id="user-dropdown" className="app-header-dropdown">
               <div className="app-header-dropdown-title">Asetukset</div>
 
-              {/* ThemeToggle lisätään tähän seuraavaksi */}
+              <ThemeToggle checked={isDarkMode} onChange={setIsDarkMode} />
             </div>
           )}
         </div>
@@ -68,28 +70,3 @@ export default function Header() {
     </header>
   );
 }
-
-//   })
-//   return (
-//     <header className="app-header">
-//       <div className="app-header-brand">
-//         <img
-//           src="/company-logo.svg"
-//           alt="Huoltopyyntö"
-//           className="app-header-logo"
-//         />
-//         <span>Huoltopyyntö</span>
-//       </div>
-
-//       <div className="app-header-actions">
-//         <button type="button" aria-label="Ilmoitukset">
-//           <Bell size={22} />
-//         </button>
-
-//         <button type="button" aria-label="Käyttäjä">
-//           <UserCircle size={25} />
-//         </button>
-//       </div>
-//     </header>
-//   );
-// }

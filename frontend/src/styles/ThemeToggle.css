@@ -1,0 +1,51 @@
+/* Theme toggle styles */
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.theme-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: inherit;
+}
+
+.app-header-actions .theme-toggle-switch {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 44px;
+  height: 26px;
+  padding: 3px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 999px;
+  background-color: #e2e8f0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.app-header-actions .theme-toggle-switch.is-on {
+  background-color: #2563eb;
+}
+
+.theme-toggle-thumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: #94a3b8;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle-switch.is-on .theme-toggle-thumb {
+  background-color: #ffffff;
+  transform: translateX(18px);
+}
