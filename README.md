@@ -139,20 +139,49 @@ The production frontend and backend are deployed as separate Render services. Au
 
 ---
 
-## Validation
+Validation
 
-The backend uses **Zod** to validate incoming API data.
+The application uses Zod on both the frontend and backend.
 
-Validation is used for:
+Frontend Validation
 
-- Maintenance request creation
-- Maintenance request updates
-- Status updates
-- MongoDB request IDs
+The frontend uses Zod together with React Hook Form and zodResolver.
+
+Zod schemas are used for client-side validation on authentication forms such as:
+
+Login
+
+Registration
+
+Email format
+
+Password requirements
+
+Required form fields
+
+This allows invalid input to be detected before a request is sent to the backend and provides immediate validation feedback to the user.
+
+Backend Validation
+
+The backend uses Zod to validate incoming maintenance request API data.
+
+Backend validation is used for:
+
+Creating maintenance requests
+
+Updating maintenance requests
+
+Updating maintenance request status
+
+Validating maintenance request IDs
+
+Validating allowed maintenance categories
+
+Validating allowed maintenance statuses
+
+The backend does not rely only on frontend validation. Incoming API data is validated again on the server before it is processed or stored in MongoDB.
 
 Invalid requests return an appropriate HTTP error response instead of being written directly to the database.
-
-Frontend forms also perform validation before submitting data.
 
 ---
 
