@@ -1,113 +1,166 @@
 # Maintenance Request Application
 
-## Overview
+A full-stack maintenance request application for residents and maintenance administrators.
 
-The maintenance request application provides a simple way for residents to report maintenance issues and for maintenance staff to manage and resolve those requests. Residents can submit and track their own requests, while maintenance staff can view and process requests from all residents.
+Residents can create and track their own maintenance requests, while administrators can view all requests and update their status.
 
-The application is designed for two types of users: **residents/users** and **maintenance staff/administrators**.
+The application includes authentication, role-based access control, validation, a MongoDB database, and separate frontend and backend deployments.
 
-## User Experience
+## Live Application
 
-After logging in, a resident can see their own maintenance requests and their current status.
+**Frontend:**  
+https://maintenance-request-frontend.onrender.com
 
-The user can select **"Create a New Maintenance Request"** and choose a category:
+**Backend:**  
+https://maintenance-request-backend.onrender.com
 
-- Electricity
-- Water
-- Heating
-- Doors/Locks
-- Other
+> The services are hosted on Render's free tier, so the backend may take a short moment to start after a period of inactivity.
 
-The user enters a short title and description and can provide their building address and apartment number.
+---
 
-Once the request is submitted, its status is automatically set to **New**.
+## Features
 
-## Maintenance Staff
+### Residents
 
-Maintenance staff can see all maintenance requests, including requests with the statuses **New**, **In Progress**, and **Completed**.
+Residents can:
 
-The requests displayed to the maintenance user depend on the selected filter. The default filter is **All**.
+- Register a new account
+- Log in securely
+- Create maintenance requests
+- View their own maintenance requests
+- View request details
+- Filter requests by status
+- Edit their own maintenance requests
+- Delete their own maintenance requests
+- Track the status of submitted requests
 
-When a maintenance worker starts working on a request, they change its status to **In Progress**. Once the issue has been fixed, the status is changed to **Completed**.
+New users are automatically assigned the `user` role.
 
-The resident can see the status changes in their own view.
+### Administrators
 
-The maintenance request process is:
+Administrators can:
 
-**New Maintenance Request → New → In Progress → Completed**
+- Log in using an administrator account
+- View maintenance requests from all users
+- Filter and sort maintenance requests
+- View individual request details
+- Change the status of maintenance requests
+- Delete maintenance requests
 
-## Main Pages
+Administrators cannot edit the content of a maintenance request. They can only manage its status.
 
-The application consists of four main pages:
+---
 
-- Login Page
-- Register Page
-- Home
-- New Maintenance Request
-- Request Details
+## Maintenance Request Statuses
 
-### 1. Login Page
+The application uses the following statuses:
 
-The Login Page allows resident users and maintenance users to log into the application.
+| Status | Description |
+|---|---|
+| `new` | A newly submitted maintenance request |
+| `in progress` | The request is currently being handled |
+| `resolved` | The maintenance issue has been resolved |
 
-### 2. Register Page
+The normal request lifecycle is:
 
-New users can sign up for the application by providing a name, email and password. Once successfully registered, the user can log in with the registered email and password.
+`new` → `in progress` → `resolved`
 
-### 2. Home
+---
 
-The Home page displays different information depending on the user's role.
+## Maintenance Categories
 
-**Resident:**
+Maintenance requests can use the following categories:
 
-- Their maintenance requests
-- Status of their requests
-- Filtering by status
+| Value | Category |
+|---|---|
+| `electricity` | Electricity |
+| `water` | Water |
+| `heating` | Heating |
+| `doors_locks` | Doors and locks |
+| `other` | Other |
 
-**Maintenance:**
+---
 
-- All maintenance requests
-- Number of requests by status
-- Filtering by status
+## Technology Stack
 
-### 3. New Maintenance Request
+### Frontend
 
-A form for creating and submitting a new maintenance request.
+- React
+- TypeScript
+- Vite
+- React Router
+- React Hook Form
+- Zod
+- Better Auth client
+- Lucide React
+- Vitest
+- Testing Library
 
-### 4. Request Details
+### Backend
 
-When selecting a single request, the page displays detailed information about the maintenance request, including its current status.
+- Node.js
+- Express
+- TypeScript
+- MongoDB
+- Mongoose
+- Better Auth
+- Better Auth MongoDB Adapter
+- Zod
+- CORS
 
-## Filters
+### Deployment
 
-Both resident and maintenance users can filter the maintenance requests displayed on their Home page.
+- Render Static Site – frontend
+- Render Web Service – backend
+- MongoDB Atlas – database
 
-The available filters are:
+---
 
-- **All**
-- **New**
-- **In Progress**
-- **Completed**
+## Authentication and Authorization
 
-The default filter is **All**.
+Authentication is handled with **Better Auth**.
 
-## User Roles
+The backend uses the Better Auth MongoDB adapter and the Better Auth admin plugin.
 
-The application uses role-based access to determine what each user can see and do. Users are automatically assigned `user` role when registering through the application.
+Two application roles are currently used:
 
-A regular user can see their own maintenance requests, while maintenance staff can see all maintenance requests and perform actions such as:
+| Role | Access |
+|---|---|
+| `user` | Can manage their own maintenance requests |
+| `admin` | Can view all maintenance requests and change their status |
 
-- **Start Processing**
-- **Mark as Completed**
+New users are assigned the `user` role automatically.
+
+Users cannot assign themselves the `admin` role during registration.
+
+Protected backend routes verify the active Better Auth session before allowing access.
+
+The production frontend and backend are deployed as separate Render services. Authentication cookies are configured with secure cross-site cookie settings for the production environment.
+
+---
+
+## Validation
+
+The backend uses **Zod** to validate incoming API data.
+
+Validation is used for:
+
+- Maintenance request creation
+- Maintenance request updates
+- Status updates
+- MongoDB request IDs
+
+Invalid requests return an appropriate HTTP error response instead of being written directly to the database.
+
+Frontend forms also perform validation before submitting data.
+
+---
 
 ## Database
 
-The application uses two main database tables:
+The application uses **MongoDB Atlas**.
 
-- `user` – stores user information
-- `maintenance_request` – stores maintenance requests
-
-A maintenance request contains:
+Maintenance requests contain data such as:
 
 - User ID
 - Title
@@ -117,5 +170,287 @@ A maintenance request contains:
 - Apartment number
 - Status
 - Creation date
+- Update date
 
-Each maintenance request is associated with the user who created it through the User ID.
+Each maintenance request is associated with the authenticated user who created it.
+
+Better Auth also stores authentication-related data in MongoDB.
+
+---
+
+## API
+
+The backend is available under:
+
+```text
+https://maintenance-request-backend.onrender.com
+```
+
+### Authentication
+
+Better Auth endpoints are mounted under:
+
+```text
+/api/auth/*
+```
+
+Examples include:
+
+```text
+POST /api/auth/sign-up/email
+POST /api/auth/sign-in/email
+GET  /api/auth/get-session
+```
+
+### Maintenance Requests
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/maintenance` | Create a maintenance request |
+| `GET` | `/api/maintenance` | Get maintenance requests |
+| `GET` | `/api/maintenance/:id` | Get a single maintenance request |
+| `PATCH` | `/api/maintenance/:id` | Update a user's maintenance request |
+| `PATCH` | `/api/maintenance/:id/status` | Update request status as admin |
+| `DELETE` | `/api/maintenance/:id` | Delete a maintenance request |
+
+All maintenance request routes require authentication.
+
+For `GET /api/maintenance`:
+
+- A regular user receives only their own requests.
+- An administrator receives all requests.
+
+For `PATCH /api/maintenance/:id/status`:
+
+- Only administrators are allowed to update the status.
+
+---
+
+## Project Structure
+
+```text
+maintenance-request-app/
+│
+├── backend/
+│   ├── config/
+│   ├── constants/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── validation/
+│   ├── auth.ts
+│   ├── server.ts
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── lib/
+│   │   ├── pages/
+│   │   ├── styles/
+│   │   ├── tests/
+│   │   ├── types/
+│   │   └── utils/
+│   ├── package.json
+│   └── vite.config.ts
+│
+└── README.md
+```
+
+---
+
+## Local Development
+
+### Requirements
+
+Before running the application locally, install:
+
+- Node.js
+- npm
+- MongoDB Atlas database or another compatible MongoDB instance
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Laurean-parhaimmat/maintenance-request-app.git
+cd maintenance-request-app
+```
+
+---
+
+## Backend Setup
+
+Move to the backend directory:
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file inside the `backend` directory.
+
+Example:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+FRONTEND_URL=http://localhost:5173
+BETTER_AUTH_URL=http://localhost:5000
+BETTER_AUTH_SECRET=your_secret_key
+PORT=5000
+```
+
+Do not commit `.env` files or secret values to GitHub.
+
+Start the backend development server:
+
+```bash
+npm run dev
+```
+
+The backend runs by default at:
+
+```text
+http://localhost:5000
+```
+
+Build the backend:
+
+```bash
+npm run build
+```
+
+Start the compiled backend:
+
+```bash
+npm start
+```
+
+---
+
+## Frontend Setup
+
+Open another terminal and move to the frontend directory:
+
+```bash
+cd frontend
+npm install
+```
+
+Create a `.env` file inside the `frontend` directory:
+
+```env
+VITE_REACT_APP_BETTER_AUTH_URL=http://localhost:5000
+```
+
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+The frontend runs by default at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## Testing
+
+Frontend tests use **Vitest** and **Testing Library**.
+
+Run the tests from the frontend directory:
+
+```bash
+npm test
+```
+
+Build the frontend with:
+
+```bash
+npm run build
+```
+
+Run the frontend linter with:
+
+```bash
+npm run lint
+```
+
+---
+
+## Production Deployment
+
+The project is deployed to Render using two separate services.
+
+### Frontend
+
+The frontend is deployed as a Render **Static Site**.
+
+Build command:
+
+```bash
+cd frontend && npm ci && npm run build
+```
+
+Publish directory:
+
+```text
+frontend/dist
+```
+
+Production environment variable:
+
+```env
+VITE_REACT_APP_BETTER_AUTH_URL=https://maintenance-request-backend.onrender.com
+```
+
+### Backend
+
+The backend is deployed as a Render **Web Service**.
+
+Build command:
+
+```bash
+cd backend && npm ci && npm run build
+```
+
+Start command:
+
+```bash
+cd backend && npm start
+```
+
+The backend requires production environment variables for MongoDB, Better Auth and the frontend URL.
+
+Production secrets such as `MONGODB_URI` and `BETTER_AUTH_SECRET` must only be stored in Render's environment variable configuration and must never be committed to the repository.
+
+---
+
+## Security
+
+The application currently includes several security measures:
+
+- Better Auth session-based authentication
+- Role-based authorization
+- Protected maintenance request API routes
+- Server-side Zod validation
+- Users can only access their own maintenance requests
+- Administrator-only status updates
+- Secure HTTP-only authentication cookies
+- CORS restricted to the configured frontend origin
+- Authentication secrets stored in environment variables
+- MongoDB credentials stored outside the source code
+
+---
+
+## Current Status
+
+The application currently supports the complete basic maintenance request workflow:
+
+`Registration → Login → Create Request → Track Request → Admin Processing → Resolved`
+
+Both the frontend and backend are deployed and connected to MongoDB Atlas.
