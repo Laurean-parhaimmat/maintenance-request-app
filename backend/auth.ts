@@ -7,10 +7,11 @@ import { admin } from "better-auth/plugins";
 
 const mongoUri = process.env.MONGODB_URI;
 
+const frontendUrl =
+  process.env.FRONTEND_URL || "http://localhost:5173";
+
 if (!mongoUri) {
-  throw new Error(
-    "MONGODB_URI is missing from environment variables"
-  );
+  throw new Error("MONGODB_URI is missing from environment variables");
 }
 
 const client = new MongoClient(mongoUri);
@@ -23,13 +24,30 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
   },
 
-  plugins: [
-    admin(),
-  ],
+  plugins: [admin()],
 
-  trustedOrigins: [
-    "http://localhost:5173",
-  ],
+  trustedOrigins: [frontendUrl],
+
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    },
+  },
+
+  // Role based authentication
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: true,
+        defaultValue: "user",
+        input: false, // Prevent users from self-assigning admin on registration
+      },
+    },
+  },
 });

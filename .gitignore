@@ -28,3 +28,6 @@ dist-ssr
 
 # pnpm lock files
 pnpm-*
+
+# Vitest reports and artifacts
+./vitest/

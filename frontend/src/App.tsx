@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-//import HomeUser from "./pages/Home-User";
-import HomeAdmin from "./pages/Home-Admin";
+import RoleBasedHome from "./utils/RoleBasedHome";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import RequestDetails from "./pages/RequestDetails";
@@ -15,16 +13,19 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="*" element={<NotFound />} />
+        {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
         <Route element={<PrivateRoutes />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<HomeAdmin />} />
+            <Route path="/" element={<RoleBasedHome />} />
             <Route path="/request/new" element={<NewMaintenanceRequest />} />
             <Route path="/request/:id" element={<RequestDetails />} />
           </Route>
         </Route>
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

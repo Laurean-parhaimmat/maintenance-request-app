@@ -2,11 +2,10 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { authClient } from "../lib/auth-client";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import "../styles/Login.css";
-
-const authUrl = import.meta.env.VITE_REACT_APP_BETTER_AUTH_URL; // Hide backend connection port using environment variable
 
 const LoginSchema = z.object({
   email: z
@@ -44,34 +43,30 @@ export default function LoginPage() {
   });
 
   const onLogin = async (data: LoginInput) => {
-    setLoading(true);
-
     try {
-      const response = await fetch(`${authUrl}/api/auth/sign-in/email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
+      await authClient.signIn.email(
+        {
           email: data.email,
           password: data.password,
-        }),
-      });
-
-      if (!response.ok) {
-        setError("root.serverError", {
-          type: String(response.status),
-        });
-
-        return;
-      }
-
-      navigate("/");
+        },
+        {
+          onRequest: () => {
+            setLoading(true);
+          },
+          onSuccess: () => {
+            setLoading(false);
+            navigate("/");
+          },
+          onError: (ctx) => {
+            setLoading(false);
+            setError("root.serverError", {
+              type: String(ctx.error.status),
+            });
+          },
+        },
+      );
     } catch (err) {
       console.error("Kirjautuminen epäonnistui", err);
-    } finally {
-      setLoading(false);
     }
   };
 

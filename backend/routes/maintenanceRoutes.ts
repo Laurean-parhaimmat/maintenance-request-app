@@ -14,6 +14,7 @@ import {
 } from "../validation/maintenanceSchemas.js";
 
 import { requireAuth } from "../middleware/authMiddleware.js";
+import id from "zod/v4/locales/id.js";
 const router = Router();
 
 
@@ -168,13 +169,17 @@ router.patch(
     const sessionUser =
       res.locals.session.user;
 
-    const filter =
-      sessionUser.role === "admin"
-        ? { _id: id }
-        : {
-            _id: id,
-            userId: sessionUser.id,
-          };
+    if (sessionUser.role === "admin") {
+      return res.status(403).json({
+        message:
+          "Admin voi muuttaa vain huoltopyynnön statusta",
+      });
+    }
+
+    const filter = {
+      _id: id,
+      userId: sessionUser.id,
+    };
 
     const request =
       await MaintenanceRequest.findOneAndUpdate(
