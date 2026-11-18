@@ -522,7 +522,7 @@ npm run build
 
 ## Known Issues
 
-_No known issues documented yet._
+- **Email addresses containing Finnish special characters:** Registration currently accepts email addresses containing characters such as `ä` or `ö`, but users may not be able to log in afterward with the same email address. Email validation and normalization should be made consistent between registration and login.
 
 ---
 
